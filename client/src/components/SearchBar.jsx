@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const SearchBar = () => {
-  // Sample data for testing
   const items = [
     { id: 1, name: 'Item A', type: 'Category 1' },
     { id: 2, name: 'Item B', type: 'Category 2' },

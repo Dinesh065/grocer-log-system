@@ -3,6 +3,7 @@ import React from 'react';
 import DashboardHeader from './DashboardHeader';
 import StockAlert from './StockAlert';
 import DashboardItems from './DashboardItems';
+import DashboardGraph from './DashboardGraph';
 import Footer from './Footer';
 
 const Dashboard = () => {
@@ -11,6 +12,7 @@ const Dashboard = () => {
             <StockAlert />
             <DashboardHeader />
             <DashboardItems/>
+            <DashboardGraph/>
             <Footer/>
         </div>
     );
