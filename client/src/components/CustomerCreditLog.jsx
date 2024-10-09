@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faFileInvoiceDollar, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileInvoiceDollar, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 
 const CustomerCredit = () => {
@@ -67,14 +67,41 @@ const CustomerCredit = () => {
         setIsAddPurchaseVisible(false);
     };
 
+    // const markAsPaid = () => {
+    //     const updatedCustomer = { ...selectedCustomer, status: 'Paid', totalPending: 0 };
+    //     setSelectedCustomer(updatedCustomer);
+    //     setCustomers(customers.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
+    // };
+
     const markAsPaid = () => {
-        const updatedCustomer = { ...selectedCustomer, status: 'Paid', totalPending: 0 };
+        const paidDate = new Date().toISOString().split('T')[0];
+        const updatedCustomer = {
+            ...selectedCustomer,
+            status: 'Paid',
+            totalPending: 0,
+            paidOn: paidDate
+        };
         setSelectedCustomer(updatedCustomer);
         setCustomers(customers.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
     };
 
+    const deleteCustomer = () => {
+        const updatedCustomers = customers.filter(c => c.id !== selectedCustomer.id);
+        setCustomers(updatedCustomers);
+        setSelectedCustomer(null);
+    };
+
     const generateBill = () => {
-        alert(`Bill sent to ${selectedCustomer.name}`);
+        const purchases = selectedCustomer.purchases.map(p => `${p.name}: ${p.quantity} x ${p.pricePerItem} = ${p.total}`).join('\n');
+        const bill = `
+            Customer Name: ${selectedCustomer.name}
+            Flat No: ${selectedCustomer.flatNo}
+            Society: ${selectedCustomer.societyName}
+            Total Pending: ${selectedCustomer.totalPending}
+            Purchases:
+            ${purchases}
+        `;
+        alert(`Bill Details:\n${bill}`);
     };
 
     return (
@@ -113,7 +140,7 @@ const CustomerCredit = () => {
                     </div>
                 </div>
 
-                <button onClick={() => setSelectedCustomer({newCustomer})}>
+                <button onClick={() => setSelectedCustomer({ newCustomer })}>
                     <FontAwesomeIcon icon={faPlus} /> Add New Customer
                 </button>
 
@@ -151,6 +178,7 @@ const CustomerCredit = () => {
                             <th>Flat No</th>
                             <th>Society Name</th>
                             <th>Total Pending</th>
+                            <th>Status</th>
                             <th>Date Range</th>
                             <th>Actions</th>
                         </tr>
@@ -162,6 +190,7 @@ const CustomerCredit = () => {
                                 <td>{customer.flatNo}</td>
                                 <td>{customer.societyName}</td>
                                 <td>{customer.totalPending}</td>
+                                <td>{customer.status}</td>
                                 <td>{customer.startDate} - {customer.lastPurchase}</td>
                                 <td>
                                     <button onClick={() => viewDetails(customer)}>
@@ -178,6 +207,9 @@ const CustomerCredit = () => {
                     <p>Flat No: {selectedCustomer.flatNo}</p>
                     <p>Society: {selectedCustomer.societyName}</p>
                     <p>Total Pending: {selectedCustomer.totalPending}</p>
+                    {selectedCustomer.status === 'Paid' && (
+                        <p className="text-green-600">Paid on: {selectedCustomer.paidOn}</p>
+                    )}
 
                     <h4 className='mt-5 mb-2'>Purchases:</h4>
                     <table className="purchase-table">
@@ -245,8 +277,11 @@ const CustomerCredit = () => {
                             </div>
                         </div>
                     )}
+                    <button onClick={deleteCustomer} className='ml-4 delete-button_1'>
+                        <FontAwesomeIcon icon={faTrashAlt} /> Delete Customer
+                    </button>
                     <button onClick={markAsPaid} className="mark-as-paid">Mark as Paid</button>
-                    <button onClick={generateBill}><FontAwesomeIcon icon={faFileInvoiceDollar} /> Generate Bill</button>
+                    <button onClick={generateBill} className='genereate-bill'><FontAwesomeIcon icon={faFileInvoiceDollar} /> Generate Bill</button>
 
 
                     <button onClick={() => setSelectedCustomer(null)}>Back</button>

@@ -397,3 +397,16 @@ table.customer-table button:hover {
   background-color: red;
 }
 
+.customer-details .delete-button_1{
+  background-color: rgb(254, 60, 60);
+}
+.customer-details .delete-button_1:hover{
+  background-color: red;
+}
+
+.customer-details .genereate-bill{
+  background-color: rgb(29, 199, 218);
+}
+.customer-details .genereate-bill:hover{
+  background-color: rgb(25, 177, 248);
+}
