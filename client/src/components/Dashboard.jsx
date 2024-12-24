@@ -8,12 +8,15 @@ import Footer from './Footer';
 
 const Dashboard = () => {
     return (
-        <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', width: '100%'}}>
+        <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', width: '100%' }}>
+            <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6">
+                Welcome to the Dashboard!
+            </h1>
             <StockAlert />
             <DashboardHeader />
-            <DashboardItems/>
-            <DashboardGraph/>
-            <Footer/>
+            <DashboardItems />
+            <DashboardGraph />
+            <Footer />
         </div>
     );
 };

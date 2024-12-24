@@ -3,6 +3,8 @@ import InventoryPagination from "./InventoryPagination";
 import InventoryToolbar from "./InventoryToolbar";
 import InventoryTable from "./InventoryTable";
 import AddNewItemForm from "./AddNewItemForm";
+import axios from "axios"
+import { asyncHandler } from "../../../server/src/utils/asynchandler";
 
 const Inventory = () => {
     // Load items from localStorage or set to default items
@@ -58,9 +60,21 @@ const Inventory = () => {
 
     const handleAddNewItem = (newItem) => {
         setItems([...items, newItem]);
-        setFilteredItems([...items, newItem]);  
-        setShowForm(false);  
+        setFilteredItems([...items, newItem]);
+        setShowForm(false);
     };
+
+    // const handleAddNewItem = async () => {
+    //     try {
+    //         const response = await axios.get("http://localhost:8000/api/addnewitem");
+    //         setItems([...items, response.data]);
+    //         setFilteredItems([...items, response.data]);
+    //         setShowForm(false);
+    //         console.log("Data fetched: ", response);
+    //     } catch (error) {
+    //         console.error("Error fetching inventory:", error)
+    //     }
+    // };
 
     const handleEditChange = (e, field) => {
         setUpdatedItem({ ...updatedItem, [field]: e.target.value });
@@ -69,17 +83,17 @@ const Inventory = () => {
     const handleUpdate = (id) => {
         setEditItemId(id);
         const itemToEdit = items.find(item => item.id === id);
-        setUpdatedItem({ ...itemToEdit });  
+        setUpdatedItem({ ...itemToEdit });
     };
 
     const saveChanges = () => {
         setItems(prevItems =>
             prevItems.map(item => (item.id === editItemId ? { ...item, ...updatedItem } : item))
         );
-        setEditItemId(null);  
-        setUpdatedItem({});  
+        setEditItemId(null);
+        setUpdatedItem({});
     };
-    
+
 
     const handleDelete = (id) => {
         const newItems = items.filter(item => item.id !== id);
@@ -92,8 +106,9 @@ const Inventory = () => {
 
     return (
         <div className="container" style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', width: '100%' }}>
-            <h1 className="text-center bg-[pink] text-[#f62f50] shadow-md font-bold">Welcome to the Inventory Management !!</h1>
-
+            <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6 ">
+                Welcome to Inventory Management
+            </h1>
             <InventoryToolbar
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -113,8 +128,8 @@ const Inventory = () => {
                     <InventoryTable
                         items={paginatedItems}
                         handleDelete={handleDelete}
-                        handleUpdate={handleUpdate} 
-                        setUpdatedItem={setUpdatedItem} 
+                        handleUpdate={handleUpdate}
+                        updatedItem={updatedItem}
                         editItemId={editItemId}
                         handleEditChange={handleEditChange}
                         saveChanges={saveChanges}

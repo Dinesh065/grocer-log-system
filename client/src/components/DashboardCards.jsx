@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const DashboardCards = () => {
     // Dummy data for total items, low stock, and stock value
@@ -7,6 +8,17 @@ const DashboardCards = () => {
     const stockValue = "$15,200";
     const totalCredits = "$3,500";
     const totalSales = "$25,000";
+    const navigate = useNavigate();
+
+    const handleTotalItem = () => {
+        navigate("/inventory");
+    }
+    const hadnleLowStock = () => {
+        navigate("/inventory");
+    }
+    const hadnleStockValue = () => {
+        navigate("/sales");
+    }
 
     // Dummy data for a few inventory entries
     const inventoryEntries = [
@@ -35,21 +47,21 @@ const DashboardCards = () => {
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Total Items</h2>
                     <p className="text-3xl font-bold">{totalItems}</p>
-                    <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
+                    <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" onClick={handleTotalItem}>View More</button>
                 </div>
 
                 {/* Low Stock Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Low Stock Items</h2>
                     <p className="text-3xl font-bold">{lowStockItems}</p>
-                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">View More</button>
+                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={hadnleLowStock}>View More</button>
                 </div>
 
                 {/* Stock Value Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Stock Value</h2>
                     <p className="text-3xl font-bold">{stockValue}</p>
-                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">View More</button>
+                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onClick={hadnleStockValue}>View More</button>
                 </div>
 
                 {/* Inventory Entries Section */}

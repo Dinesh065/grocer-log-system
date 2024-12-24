@@ -72,7 +72,7 @@ const SalesLog = () => {
                     <div className="bg-white shadow-lg rounded-lg p-2 flex-grow mr-4 border border-gray-300">
                         <h2 className="text-lg font-semibold mb-2 text-gray-700">Filter Sales by Date</h2>
                         <div className="flex items-center">
-                            <div className="flex space-x-2 items-center flex-grow">
+                            <div className="flex space-x-1 items-center flex-grow">
                                 <input
                                     type="date"
                                     name="startDate"
@@ -120,14 +120,14 @@ const SalesLog = () => {
                                     value={newSale.product}
                                     onChange={e => setNewSale({ ...newSale, product: e.target.value })}
                                     placeholder="Product Name"
-                                    className="p-2 border rounded-lg w-full mb-2"
+                                    className="p-2 border rounded-lg w-full mb-2 shadow-lg border-red-300"
                                 />
                                 <input
                                     type="date"
                                     name="date"
                                     value={newSale.date}
                                     onChange={e => setNewSale({ ...newSale, date: e.target.value })}
-                                    className="p-2 border rounded-lg w-full mb-2"
+                                    className="p-2 border rounded-lg w-full mb-2 shadow-lg border-red-300"
                                 />
                                 <input
                                     type="number"
@@ -135,7 +135,7 @@ const SalesLog = () => {
                                     value={newSale.quantity}
                                     onChange={e => setNewSale({ ...newSale, quantity: Number(e.target.value) })}
                                     placeholder="Quantity"
-                                    className="p-2 border rounded-lg w-full mb-2"
+                                    className="p-2 border rounded-lg w-full mb-2 shadow-lg border-red-300"
                                 />
                                 <input
                                     type="number"
@@ -143,7 +143,7 @@ const SalesLog = () => {
                                     value={newSale.pricePerQuantity}
                                     onChange={e => setNewSale({ ...newSale, pricePerQuantity: Number(e.target.value) })}
                                     placeholder="Price per Unit"
-                                    className="p-2 border rounded-lg w-full mb-2"
+                                    className="p-2 border rounded-lg w-full mb-2 shadow-lg border-red-300"
                                 />
                                 <button
                                     className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out"
@@ -186,8 +186,8 @@ const SalesLog = () => {
                                     <td className="px-4 py-2 border">{sale.date}</td>
                                     <td className="px-4 py-2 border">{sale.product}</td>
                                     <td className="px-4 py-2 border">{sale.quantity}</td>
-                                    <td className="px-4 py-2 border">${sale.pricePerQuantity}</td>
-                                    <td className="px-4 py-2 border">${sale.total}</td>
+                                    <td className="px-4 py-2 border">₹{sale.pricePerQuantity}</td>
+                                    <td className="px-4 py-2 border">₹{sale.total}</td>
                                 </tr>
                             ))}
                         </tbody>
