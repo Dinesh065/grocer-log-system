@@ -1,22 +1,26 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDashboard } from "./DashboardContext";
 
 const DashboardCards = () => {
+
+    const { dashboardData } = useDashboard();
+
     // Dummy data for total items, low stock, and stock value
-    const totalItems = 120;
-    const lowStockItems = 5;
-    const stockValue = "$15,200";
-    const totalCredits = "$3,500";
-    const totalSales = "$25,000";
+    // const totalItems = 120;
+    // const lowStockItems = 5;
+    // const stockValue = "$15,200";
+    // const totalCredits = "$3,500";
+    // const totalSales = "$25,000";
     const navigate = useNavigate();
 
     const handleTotalItem = () => {
         navigate("/inventory");
     }
-    const hadnleLowStock = () => {
-        navigate("/inventory");
+    const hadnleTotalCredits = () => {
+        navigate("/credits");
     }
-    const hadnleStockValue = () => {
+    const hadnleTotalSales = () => {
         navigate("/sales");
     }
 
@@ -46,22 +50,22 @@ const DashboardCards = () => {
                 {/* Total Items Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Total Items</h2>
-                    <p className="text-3xl font-bold">{totalItems}</p>
+                    <p className="text-3xl font-bold">{dashboardData.totalItems}</p>
                     <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" onClick={handleTotalItem}>View More</button>
                 </div>
 
-                {/* Low Stock Card */}
+                {/*Total Sales*/}
                 <div className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-xl font-semibold mb-2">Low Stock Items</h2>
-                    <p className="text-3xl font-bold">{lowStockItems}</p>
-                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={hadnleLowStock}>View More</button>
+                    <h2 className="text-xl font-semibold mb-2">Total Sales</h2>
+                    <p className="text-3xl font-bold">{dashboardData.totalSales}</p>
+                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={hadnleTotalSales}>View More</button>
                 </div>
 
-                {/* Stock Value Card */}
+                {/* Total Credit*/}
                 <div className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-xl font-semibold mb-2">Stock Value</h2>
-                    <p className="text-3xl font-bold">{stockValue}</p>
-                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onClick={hadnleStockValue}>View More</button>
+                    <h2 className="text-xl font-semibold mb-2">Total Credits</h2>
+                    <p className="text-3xl font-bold">{dashboardData.totalCredits}</p>
+                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onClick={hadnleTotalCredits}>View More</button>
                 </div>
 
                 {/* Inventory Entries Section */}
@@ -86,7 +90,7 @@ const DashboardCards = () => {
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More/Update</button>
+                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                         {/* <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Update</button> */}
                     </div>
                 </div>
@@ -96,7 +100,7 @@ const DashboardCards = () => {
                 {/* Customer Credit Log Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Customer Credit Log</h2>
-                    <p className="text-3xl font-bold">{totalCredits}</p>
+                    {/* <p className="text-3xl font-bold">{dashboardData.totalCredits}</p> */}
                     <table className="w-full table-auto mt-4">
                         <thead>
                             <tr>
@@ -114,7 +118,7 @@ const DashboardCards = () => {
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More & Update</button>
+                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                         {/* <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Update</button> */}
                     </div>
                 </div>
@@ -122,7 +126,7 @@ const DashboardCards = () => {
                 {/* Sales Log Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Sales Log</h2>
-                    <p className="text-3xl font-bold">{totalSales}</p>
+                    {/* <p className="text-3xl font-bold">{dashboardData.totalSales}</p> */}
                     <table className="w-full table-auto mt-4">
                         <thead>
                             <tr>
@@ -140,7 +144,7 @@ const DashboardCards = () => {
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More & Update</button>
+                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                         {/* <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Update</button> */}
                     </div>
                 </div>

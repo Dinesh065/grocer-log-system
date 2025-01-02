@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
 import '../App.css';
 
 const CustomerTable = ({ filteredCustomers, viewDetails }) => (
@@ -18,7 +19,7 @@ const CustomerTable = ({ filteredCustomers, viewDetails }) => (
         </thead>
         <tbody>
             {filteredCustomers.map(customer => (
-                <tr key={customer.id}>
+                <tr key={uuidv4()}>
                     <td>{customer.name}</td>
                     <td>{customer.flatNo}</td>
                     <td>{customer.societyName}</td>

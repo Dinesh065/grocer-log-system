@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart } from "react-icons/fa"; // Icon
+import axios from "axios";
+import { useDashboard } from "./DashboardContext";
 // import AddNewSaleForm from "./AddNewSaleForm"; // Assuming this is a separate form component
 
 const SalesLog = () => {
@@ -10,12 +12,29 @@ const SalesLog = () => {
         { date: "2024-10-02", product: "Product B", quantity: 5, pricePerQuantity: 100, total: 500 },
     ];
 
-    const loadSalesFromLocalStorage = () => {
-        const storedSales = localStorage.getItem('salesData');
-        return storedSales ? JSON.parse(storedSales) : initialData;
+    const { setDashboardData } = useDashboard();
+
+    const fetchSalesFromBackend = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/api/v1/sales/getsales");
+            if (response.status === 200) {
+                setSales(response.data);
+                setFilteredSales(response.data);
+            } else {
+                console.error("Failed to fetch sales data. Status:", response.status);
+                alert("Failed to load sales data. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error fetching sales data:", error);
+            alert("Error fetching sales data. Please check the server.");
+        }
     };
 
-    const [sales, setSales] = useState(loadSalesFromLocalStorage());
+    useEffect(() => {
+        fetchSalesFromBackend(); // Load sales data on component mount
+    }, []);
+
+    const [sales, setSales] = useState([]);
     const [filteredSales, setFilteredSales] = useState(sales);
     const [newSale, setNewSale] = useState({
         product: '',
@@ -25,11 +44,15 @@ const SalesLog = () => {
     });
 
     useEffect(() => {
-        localStorage.setItem('salesData', JSON.stringify(sales));
-        setFilteredSales(sales);
-    }, [sales]);
+        const totalSales = filteredSales.reduce((acc, sale) => acc + sale.total, 0);
+        
+        setDashboardData((prev) => ({
+            ...prev,
+            totalSales,
+        }));
+    }, [filteredSales, setDashboardData]);   
 
-    const handleAddSale = () => {
+    const handleAddSale = async () => {
         if (!newSale.product || !newSale.date || newSale.quantity <= 0 || newSale.pricePerQuantity <= 0) {
             alert("Please fill in all fields correctly.");
             return;
@@ -37,10 +60,21 @@ const SalesLog = () => {
 
         const total = newSale.quantity * newSale.pricePerQuantity;
         const saleWithTotal = { ...newSale, total, id: Date.now() };
-        setSales([...sales, saleWithTotal]);
-        setNewSale({ product: '', date: '', quantity: 0, pricePerQuantity: 0 });
-        setShowAddNewSaleForm(false);
-    };
+        try {
+            const response = await axios.post("http://localhost:8000/api/v1/sales/addnewsale", saleWithTotal);
+            if (response.status === 200) {
+                setSales([...sales, response.data]);
+                setNewSale({ product: '', date: '', quantity: 0, pricePerQuantity: 0 });
+                setShowAddNewSaleForm(false);
+                console.log("Sale added successfully.")
+            } else{
+                alert("Failed to add sale. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error adding new sale:", error);
+            alert("Error adding new sale. Please try again.");
+        }
+    }
 
     const handleDateFilter = () => {
         const filtered = sales.filter(sale => {

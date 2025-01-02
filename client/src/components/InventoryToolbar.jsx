@@ -44,15 +44,15 @@ const InventoryToolbar = ({
   };
 
   return (
-    <div className="toolbar pt-5 pl-3 relative">
-      <div className="relative w-[800px]">
+    <div className="toolbar">
+      <div className="relative w-[1100px]">
         <input
           type="text"
           placeholder="Search..."
           value={searchTerm}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          className="w-full h-[40px] border border-gray-300 focus:outline-none focus:ring-0 pl-8 pr-2"
+          className="w-[100%] h-[50px] bg-white shadow-lg rounded-lg p-2 flex-grow border border-gray-300 focus:outline-[gray] focus:ring-0 "
         />
 
         {suggestions.length > 0 && (
@@ -73,8 +73,8 @@ const InventoryToolbar = ({
       <select
         value={filterStatus}
         onChange={(e) => setFilterStatus(e.target.value)}
-        className="ml-4"
-      >
+        className=" h-[50px] flex flex-col bg-white shadow-lg rounded-lg p-2  border border-gray-300"
+      > 
         <option value="">All Statuses</option>
         <option value="In Stock">In Stock</option>
         <option value="Low">Low</option>
@@ -84,7 +84,7 @@ const InventoryToolbar = ({
       <select
         value={sortBy}
         onChange={(e) => setSortBy(e.target.value)}
-        className="ml-4"
+        className=" h-[50px] flex flex-col bg-white shadow-lg rounded-lg p-2  border border-gray-300 "
       >
         <option value="">Sort By</option>
         <option value="name">Item Name</option>

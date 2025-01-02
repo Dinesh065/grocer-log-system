@@ -55,29 +55,29 @@ const registerUser = asyncHandler(async (req, res,) => {
     }
     // console.log(req.files);
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    // const avatarLocalPath = req.files?.avatar[0]?.path;
+    // // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-    let coverImageLocalPath;
-    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
-        coverImageLocalPath = req.files.coverImage[0].path
-    } // here if coverImage is not provided by client than cloudinary automatically handles this and gives a empty string
+    // let coverImageLocalPath;
+    // if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+    //     coverImageLocalPath = req.files.coverImage[0].path
+    // } // here if coverImage is not provided by client than cloudinary automatically handles this and gives a empty string
 
-    if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is required")
-    }
+    // if (!avatarLocalPath) {
+    //     throw new ApiError(400, "Avatar file is required")
+    // }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    // const avatar = await uploadOnCloudinary(avatarLocalPath)
+    // const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
-    if (!avatar) {
-        throw new ApiError(400, "Avatar file is required")
-    }
+    // if (!avatar) {
+    //     throw new ApiError(400, "Avatar file is required")
+    // }
 
     const user = await User.create({
         fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
+        // avatar: avatar.url,
+        // coverImage: coverImage?.url || "",
         email,
         password,
         username: username.toLowerCase(),
@@ -462,6 +462,35 @@ const getWatchHistory = asyncHandler(async(req,res) => {
     )
 })
 
+// Update inventory item
+// const editInventoryItem = asyncHandler(async (req, res) => {
+//     const { id, ...updateData } = req.body;
 
+//     if (!id) {
+//         return res.status(400).json({ message: "Item ID is required" });
+//     }
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory }
+//     try {
+//         // Find the item by ID and update with new data
+//         const updatedItem = await Inventory.findByIdAndUpdate(
+//             id,               // ID of the item to update
+//             updateData,        // Fields to update
+//             { new: true }      // Return the updated document
+//         );
+
+//         if (!updatedItem) {
+//             return res.status(404).json({ message: "Item not found" });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Item updated successfully",
+//             data: updatedItem,
+//         });
+//     } catch (error) {
+//         console.error("Error updating inventory item:", error);
+//         res.status(500).json({ message: "Internal Server Error", error: error.message });
+//     }
+// });
+
+export { registerUser, loginUser, logoutUser , refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory }

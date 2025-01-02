@@ -20,11 +20,16 @@ router.route("/register").post(
     registerUser
 )
 
-router.route("/login").post(loginUser)
+router.route("/auth/login").post(loginUser);
+router.route("/auth/register").post(registerUser);
+// http://localhost:8000/api/v1/auth/login
+router.route("/")
+router.route("/api/addnewitem")
 
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
+
 
 export default router
