@@ -1,48 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDashboard } from "./DashboardContext";
+import axios from "axios";
 
 const DashboardCards = () => {
-
-    const { dashboardData } = useDashboard();
-
-    // Dummy data for total items, low stock, and stock value
-    // const totalItems = 120;
-    // const lowStockItems = 5;
-    // const stockValue = "$15,200";
-    // const totalCredits = "$3,500";
-    // const totalSales = "$25,000";
+    const [dashboardData, setDashboardData] = useState({
+        totalItems: 0,
+        totalCredits: 0,
+        totalSales: 0,
+        inventoryEntries: [],
+        creditEntries: [],
+        salesEntries: []
+    });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/v1/dashboard");
+                console.log(response.data);
+                setDashboardData(response.data);
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+            }
+        };
+
+        fetchDashboardData();
+    }, []);
 
     const handleTotalItem = () => {
         navigate("/inventory");
-    }
-    const hadnleTotalCredits = () => {
+    };
+    const handleTotalCredits = () => {
         navigate("/credits");
-    }
-    const hadnleTotalSales = () => {
+    };
+    const handleTotalSales = () => {
         navigate("/sales");
-    }
-
-    // Dummy data for a few inventory entries
-    const inventoryEntries = [
-        { id: 1, name: "Item A", sku: "001", quantity: 10 },
-        { id: 2, name: "Item B", sku: "002", quantity: 3 },
-        { id: 3, name: "Item C", sku: "003", quantity: 50 },
-    ];
-
-    // Dummy data for entries
-    const creditEntries = [
-        { id: 1, customer: "John Doe", credit: "$500" },
-        { id: 2, customer: "Jane Smith", credit: "$200" },
-        { id: 3, customer: "Bob Johnson", credit: "$700" },
-    ];
-
-    const salesEntries = [
-        { id: 1, item: "Product A", amount: "$1200" },
-        { id: 2, item: "Product B", amount: "$800" },
-        { id: 3, item: "Product C", amount: "$4500" },
-    ];
+    };
 
     return (
         <>
@@ -58,14 +51,14 @@ const DashboardCards = () => {
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Total Sales</h2>
                     <p className="text-3xl font-bold">{dashboardData.totalSales}</p>
-                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={hadnleTotalSales}>View More</button>
+                    <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={handleTotalSales}>View More</button>
                 </div>
 
                 {/* Total Credit*/}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Total Credits</h2>
                     <p className="text-3xl font-bold">{dashboardData.totalCredits}</p>
-                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onClick={hadnleTotalCredits}>View More</button>
+                    <button className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" onClick={handleTotalCredits}>View More</button>
                 </div>
 
                 {/* Inventory Entries Section */}
@@ -75,23 +68,20 @@ const DashboardCards = () => {
                         <thead>
                             <tr>
                                 <th className="px-4 py-2">Name</th>
-                                <th className="px-4 py-2">SKU</th>
                                 <th className="px-4 py-2">Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {inventoryEntries.map((item) => (
-                                <tr key={item.id} className="border-t">
-                                    <td className="px-4 py-2">{item.name}</td>
-                                    <td className="px-4 py-2">{item.sku}</td>
-                                    <td className="px-4 py-2">{item.quantity}</td>
+                            {dashboardData.inventoryEntries.map((entry) => (
+                                <tr key={entry._id} className="border-t">
+                                    <td className="px-4 py-2">{entry.name}</td>
+                                    <td className="px-4 py-2">{entry.qty}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
-                        {/* <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Update</button> */}
+                        <button onClick={handleTotalItem} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                     </div>
                 </div>
             </div>
@@ -100,7 +90,6 @@ const DashboardCards = () => {
                 {/* Customer Credit Log Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Customer Credit Log</h2>
-                    {/* <p className="text-3xl font-bold">{dashboardData.totalCredits}</p> */}
                     <table className="w-full table-auto mt-4">
                         <thead>
                             <tr>
@@ -109,24 +98,22 @@ const DashboardCards = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {creditEntries.map((entry) => (
-                                <tr key={entry.id} className="border-t">
-                                    <td className="px-4 py-2">{entry.customer}</td>
-                                    <td className="px-4 py-2">{entry.credit}</td>
+                            {dashboardData.creditEntries.map((entry) => (
+                                <tr key={entry._id} className="border-t">
+                                    <td className="px-4 py-2">{entry.name}</td>
+                                    <td className="px-4 py-2">{entry.totalPending}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
-                        {/* <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Update</button> */}
+                        <button  onClick={handleTotalCredits} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                     </div>
                 </div>
 
                 {/* Sales Log Card */}
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold mb-2">Sales Log</h2>
-                    {/* <p className="text-3xl font-bold">{dashboardData.totalSales}</p> */}
                     <table className="w-full table-auto mt-4">
                         <thead>
                             <tr>
@@ -135,17 +122,16 @@ const DashboardCards = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {salesEntries.map((entry) => (
-                                <tr key={entry.id} className="border-t">
-                                    <td className="px-4 py-2">{entry.item}</td>
-                                    <td className="px-4 py-2">{entry.amount}</td>
+                            {dashboardData.salesEntries.map((entry) => (
+                                <tr key={entry._id} className="border-t">
+                                    <td className="px-4 py-2">{entry.product}</td>
+                                    <td className="px-4 py-2">{entry.total}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <div className="mt-4 flex justify-between">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
-                        {/* <button className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Update</button> */}
+                        <button onClick={handleTotalSales} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">View More</button>
                     </div>
                 </div>
             </div>
@@ -154,3 +140,22 @@ const DashboardCards = () => {
 };
 
 export default DashboardCards;
+
+// useEffect(() => {
+//     const fetchDashboardData = async () => {
+//         try {
+//             const token = localStorage.getItem('token');
+//             const response = await axios.get("http://localhost:8000/api/v1/dashboard",{
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             });
+//             console.log(response.data);
+//             setDashboardData(response.data);
+//         } catch (error) {
+//             console.error("Error fetching dashboard data:", error.response?.data || error.message);
+//         }
+//     };
+
+//     fetchDashboardData();
+// }, []);

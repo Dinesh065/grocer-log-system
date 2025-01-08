@@ -5,6 +5,9 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
+import { InventoryItem } from '../models/inventory.models.js';
+import { Customer } from '../models/Customer.model.js';
+import { Sale } from '../models/sales.model.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -462,6 +465,33 @@ const getWatchHistory = asyncHandler(async(req,res) => {
     )
 })
 
+const getDashboardData = async (req, res) => {
+    try {
+        const totalItems = await InventoryItem.countDocuments();
+        const totalCredits = await Customer.aggregate([
+            { $group: { _id: null, total: { $sum: "$totalPending" } } }
+        ]);
+        const totalSales = await Sale.aggregate([
+            { $group: { _id: null, total: { $sum: "$total" } } }
+        ]);
+
+        const inventoryEntries = await InventoryItem.find().limit(3);
+        const creditEntries = await Customer.find().limit(3);
+        const salesEntries = await Sale.find().limit(3);
+
+        res.json({
+            totalItems,
+            totalCredits: totalCredits[0]?.total || 0,
+            totalSales: totalSales[0]?.total || 0,
+            inventoryEntries,
+            creditEntries,
+            salesEntries
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Update inventory item
 // const editInventoryItem = asyncHandler(async (req, res) => {
 //     const { id, ...updateData } = req.body;
@@ -493,4 +523,4 @@ const getWatchHistory = asyncHandler(async(req,res) => {
 //     }
 // });
 
-export { registerUser, loginUser, logoutUser , refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory }
+export { getDashboardData,registerUser, loginUser, logoutUser , refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory }

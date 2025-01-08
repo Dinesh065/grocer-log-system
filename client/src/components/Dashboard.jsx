@@ -13,7 +13,7 @@ const Dashboard = () => {
                 Welcome to the Dashboard!
             </h1>
             <StockAlert />
-            <DashboardHeader />
+            {/* <DashboardHeader /> */}
             <DashboardItems />
             {/* <DashboardGraph /> */}
             <Footer />

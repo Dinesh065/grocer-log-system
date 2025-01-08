@@ -4,11 +4,14 @@ const DashboardContext = createContext();
 
 export const DashboardProvider = ({ children }) => {
     const [dashboardData, setDashboardData] = useState({
-      totalItems: 0,
-      lowStockItems: 0,
-      stockValue: '',
-      totalCredits: '',
-      totalSales: '',
+        totalItems: 0,
+        lowStockItems: 0,
+        stockValue: '',
+        totalCredits: '',
+        totalSales: '',
+        inventoryEntries: [],
+        creditEntries: [],
+        salesEntries: []
     });
 
     return (
@@ -19,5 +22,3 @@ export const DashboardProvider = ({ children }) => {
 };
 
 export const useDashboard = () => useContext(DashboardContext);
-
-
