@@ -1,31 +1,43 @@
-//This is platform which provide a services for video,image, etc
-//Basically we will take video from the user and through Multer we will keep that video on local storage for reupload in case of failure and from local storage we will it to cloudinary which than gives the url for the video which we can use further in website
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import dotenv from "dotenv";
+import path from "path";
 
-import {v2 as cloudinary} from "cloudinary"
-import fs from "fs"
+dotenv.config();
 
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = async (localFilePath) => {
-    try{
-        if(!localFilePath) return null
-        //upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
-        })
-        //file has been uploaded successfully
-        // console.log("File is uploaded on cloudinary", response.url);
-        fs.unlinkSync(localFilePath)
-        return response;
+export const uploadOnCloudinary = async (localFilePath) => {
+    try {
+        if (!localFilePath) {
+            console.error("No file path provided to Cloudinary upload.");
+            return null;
+        }
 
+        const resolvedPath = path.resolve(localFilePath).replace(/\\/g, "/");
+
+        console.log("Uploading to Cloudinary:", resolvedPath);
+
+        // Upload with a timeout
+        const response = await cloudinary.uploader.upload(resolvedPath, {
+            resource_type: "image",
+            timeout: 120000,
+        });
+
+        console.log("Cloudinary upload successful:", response);
+
+        // Remove local file
+        fs.unlinkSync(localFilePath);
+        return response;
     } catch (error) {
-        fs.unlinkSync(localFilePath) //remove the locally saved tempory file as the upload operation got failed
+        console.error("Cloudinary upload failed:", error.error || error.message || error);
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath); 
+        }
         return null;
     }
-}
-
-export {uploadOnCloudinary}
+};

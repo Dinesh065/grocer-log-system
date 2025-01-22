@@ -1,13 +1,13 @@
 import express from "express";
 import { Sale } from "../models/sales.model.js"
 import { Router } from "express";
-
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 const salesRoutes = express.Router();
 const router = Router();
 
-salesRoutes.get("/getsales", async (req, res) => {
+salesRoutes.get("/getsales",verifyJWT, async (req, res) => {
     try {
-        const sales = await Sale.find(); // Fetch all sales records from the database
+        const sales = await Sale.find({userId: req.user.id});
         res.status(200).json(sales);
     } catch (error) {
         console.error("Error fetching sales data:", error);
@@ -15,17 +15,16 @@ salesRoutes.get("/getsales", async (req, res) => {
     }
 });
 
-salesRoutes.post('/addnewsale', async (req,res) => {
+salesRoutes.post('/addnewsale',verifyJWT, async (req,res) => {
     try {
         const { product, date, quantity, pricePerQuantity, total } = req.body;
 
-        //validate required fields
         if(!product || !date || quantity<= 0 || pricePerQuantity <= 0) {
             return res.status(400).json({message: "Please provide valid sale details."});
         }
 
-        //create a new sale record
         const newSale = new Sale({
+            userId: req.user.id,
             product,
             date,
             quantity,
@@ -33,7 +32,6 @@ salesRoutes.post('/addnewsale', async (req,res) => {
             total,
         });
 
-        //Save to database
         const savedSale = await newSale.save();
 
         res.status(200).json(savedSale);
@@ -43,7 +41,4 @@ salesRoutes.post('/addnewsale', async (req,res) => {
     }
 })
 
-
 export { salesRoutes };
-
-

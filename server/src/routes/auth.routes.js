@@ -1,16 +1,14 @@
 import express from "express";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import Joi from "joi";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+dotenv.config();
 
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
 	try {
-		const { error } = validate(req.body);
-		if (error) {
-			return res.status(400).send({ message: error.details[0].message });
-		}
 
 		const user = await User.findOne({ email: req.body.email });
 		if (!user) {
@@ -22,19 +20,22 @@ router.post("/login", async (req, res) => {
 			return res.status(401).send({ message: "Invalid Email or Password" });
 		}
 
-		const token = user.generateAuthToken();
+		const token = jwt.sign(
+			{ id: user._id, email: user.email, role: user.role },
+			process.env.JWTPRIVATEKEY,
+			{ expiresIn: "1h" }
+		);
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY);
+        } catch (err) {
+            console.error("Token validation failed:", err.message);
+        }
 		res.status(200).send({ data: token, message: "Logged in successfully" });
 	} catch (error) {
+		console.error("Error during login:", error); 
 		res.status(500).send({ message: "Internal Server Error" });
 	}
 });
-
-const validate = (data) => {
-	const schema = Joi.object({
-		email: Joi.string().email().required().label("Email"),
-		password: Joi.string().required().label("Password"),
-	});
-	return schema.validate(data);
-};
 
 export default router;

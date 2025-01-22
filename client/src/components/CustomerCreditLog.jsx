@@ -9,24 +9,22 @@ import BillModal from './BillModal';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import emailjs from 'emailjs-com';
 import { useDashboard } from './DashboardContext';
+import Footer from './Footer';
 import '../App.css';
 
 const CustomerCredit = () => {
-    const [customers, setCustomers] = useState([
-        // Sample data
-    ]);
+    const [customers, setCustomers] = useState([]);
     const [showAddNewSaleForm, setShowAddNewSaleForm] = useState(false);
     const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [newCustomer, setNewCustomer] = useState({
-        id: uuidv4(), // Generate UUID
+        id: uuidv4(),
         name: '', flatNo: '', societyName: '', email: '', totalPending: 0, startDate: '', lastPurchase: '', purchases: [], status: 'Pending'
     });
     const [purchaseDetails, setPurchaseDetails] = useState({
-        id: uuidv4(), // Generate UUID
+        id: uuidv4(),
         name: '', quantity: 1, pricePerItem: 0, total: 0
     });
     const [dateRange, setDateRange] = useState({ start: '', end: '' });
@@ -50,8 +48,8 @@ const CustomerCredit = () => {
     const formatDate = (date) => {
         const d = new Date(date);
         const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0'); // Ensure two digits
-        const day = String(d.getDate()).padStart(2, '0'); // Ensure two digits
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
 
@@ -62,20 +60,31 @@ const CustomerCredit = () => {
 
     const addNewCustomer = async () => {
         try {
+            const token = localStorage.getItem("token");
             const currentDate = formatDate(new Date());
             const customerData = {
                 ...newCustomer,
-                id: uuidv4(), // Assign UUID
+                id: uuidv4(),
                 startDate: currentDate,
                 lastPurchase: currentDate,
-                status: 'Pending'
+                status: 'Pending',
             };
-            const response = await axios.post('http://localhost:8000/api/v1/customers/addnewcustomer', customerData);
+
+            const response = await axios.post(
+                'http://localhost:8000/api/v1/customers/addnewcustomer',
+                customerData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
             if (response.status === 201) {
                 const updatedCustomers = [...customers, response.data];
                 setCustomers(updatedCustomers);
                 setNewCustomer({
-                    id: uuidv4(), // Reset with new UUID
+                    id: uuidv4(),
                     name: '',
                     flatNo: '',
                     societyName: '',
@@ -84,7 +93,7 @@ const CustomerCredit = () => {
                     startDate: '',
                     lastPurchase: '',
                     purchases: [],
-                    status: 'Pending'
+                    status: 'Pending',
                 });
             } else {
                 console.error('Failed to add customer. Server response:', response);
@@ -94,17 +103,18 @@ const CustomerCredit = () => {
         }
     };
 
-
     const addNewPurchase = async () => {
+
         if (!purchaseDetails.name || purchaseDetails.quantity <= 0 || purchaseDetails.pricePerItem <= 0) {
             alert('Please provide valid purchase details.');
             return;
         }
 
         try {
+            const token = localStorage.getItem("token");
             const currentDate = formatDate(new Date());
             const newPurchase = {
-                id: uuidv4(), // Generate a unique ID
+                id: uuidv4(),
                 name: purchaseDetails.name,
                 quantity: purchaseDetails.quantity,
                 pricePerItem: purchaseDetails.pricePerItem,
@@ -119,7 +129,11 @@ const CustomerCredit = () => {
                 lastPurchase: currentDate,
             };
 
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatepurchase`, updatedCustomer);
+            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatepurchase`, updatedCustomer, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.status === 200) {
                 setCustomers(customers.map((c) => (c._id === selectedCustomer._id ? response.data : c)));
@@ -135,8 +149,14 @@ const CustomerCredit = () => {
     };
 
     const fetchCustomers = async () => {
+
         try {
-            const response = await axios.get('http://localhost:8000/api/v1/customers');
+            const token = localStorage.getItem("token");
+            const response = await axios.get('http://localhost:8000/api/v1/customers', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.status === 200) {
                 setCustomers(response.data);
             } else {
@@ -154,13 +174,14 @@ const CustomerCredit = () => {
             totalCredits,
         }));
     }, [customers, setDashboardData]);
-    
+
     useEffect(() => {
         fetchCustomers();
     }, []);
 
     const markAsPaid = async () => {
         try {
+            const token = localStorage.getItem("token");
             const paidDate = formatDate(new Date());
             const updatedCustomer = {
                 ...selectedCustomer,
@@ -168,7 +189,11 @@ const CustomerCredit = () => {
                 totalPending: 0,
                 paidOn: paidDate
             };
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/markAsPaid`, updatedCustomer);
+            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/markAsPaid`, updatedCustomer, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.status === 200) {
                 setSelectedCustomer(response.data);
                 setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
@@ -183,12 +208,17 @@ const CustomerCredit = () => {
 
     const deleteCustomer = async () => {
         try {
+            const token = localStorage.getItem("token");
+
             if (!selectedCustomer) return;
 
-            const response = await axios.delete(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/deleteCustomer`);
+            const response = await axios.delete(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/deleteCustomer`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.status === 200) {
-                // Update state after successful deletion
                 setCustomers(customers.filter(c => c.id !== selectedCustomer.id));
                 setSelectedCustomer(null);
             } else {
@@ -201,9 +231,10 @@ const CustomerCredit = () => {
 
     const deleteItem = async (index) => {
         try {
+            const token = localStorage.getItem("token");
+
             if (!selectedCustomer) return;
 
-            // Create the updated customer data after removing the item
             const updatedPurchases = selectedCustomer.purchases.filter((_, idx) => idx !== index);
             const updatedTotalPending = updatedPurchases.reduce((sum, purchase) => sum + purchase.total, 0);
             const updatedCustomer = {
@@ -212,13 +243,13 @@ const CustomerCredit = () => {
                 totalPending: updatedTotalPending,
             };
 
-            console.log('Deleting customer with ID:', selectedCustomer._id);
-
-            // Make an API call to update the customer data
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatePurchases`, updatedCustomer);
+            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatePurchases`, updatedCustomer, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.status === 200) {
-                // Update the state with the updated customer data
                 setSelectedCustomer(response.data);
                 setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
             } else {
@@ -233,106 +264,167 @@ const CustomerCredit = () => {
         setShowBillModal(true);
     };
 
-    // const sendBillEmail = () => {
-    //     // if (!customerEmail) {
-    //     //     alert("Please enter the customer's email address.");
-    //     //     return;
-    //     // }
-    //     // Logic to send email (e.g., using EmailJS or backend API)
-    //     alert(`Bill sent successfully`);
-    //     setShowBillModal(false);
-    // };
-
-    const sendBillEmail = async () => {
-        if (!selectedCustomer || !selectedCustomer.email) {
-            alert('Customer email not available.');
-            return;
-        }
-
+    const sendBillEmail = async (profile) => {
         try {
-            // Prepare email data
-            const emailData = {
-                to_email: selectedCustomer.email,
-                customer_name: selectedCustomer.name,
-                invoice_data: JSON.stringify(selectedCustomer.purchases, null, 2), // Customize as needed
-                total_pending: selectedCustomer.totalPending,
-            };
+            if (!profile || !profile.groceryName || !profile.groceryAddress || !profile.phoneNumber) {
+                alert('Profile data is incomplete. Please update your profile.');
+                return;
+            }
 
-            // Send email using emailjs
-            await emailjs.send(
-                'your_service_id', // Replace with your EmailJS service ID
-                'your_template_id', // Replace with your EmailJS template ID
-                emailData,
-                'your_user_id' // Replace with your EmailJS user ID
+            const billHtml = `
+              <h2>TAX INVOICE</h2>
+              <h3>${profile.groceryName}</h3>
+              <p>${profile.groceryAddress}</p>
+              <p><strong>Phone:</strong> ${profile.phoneNumber}</p>
+              <p><strong>GSTIN:</strong> ${profile.gstin || '[Your GSTIN]'}</p>
+              <hr />
+              <h3>BILL TO:</h3>
+              <p><strong>${selectedCustomer.name}</strong></p>
+              <p><strong>Flat No:</strong> ${selectedCustomer.flatNo}</p>
+              <p><strong>Society:</strong> ${selectedCustomer.societyName}</p>
+              <hr />
+              <table border="1" style="width:100%; text-align:center;">
+                <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${selectedCustomer.purchases
+                    .map(
+                        (purchase, idx) => `
+                        <tr>
+                          <td>${idx + 1}</td>
+                          <td>${purchase.name}</td>
+                          <td>${purchase.quantity}</td>
+                          <td>$${purchase.pricePerItem}</td>
+                          <td>$${purchase.total}</td>
+                        </tr>
+                      `
+                    )
+                    .join('')}
+                </tbody>
+              </table>
+              <hr />
+              <p><strong>Total Pending:</strong> $${selectedCustomer.totalPending}</p>
+            `;
+
+            const response = await axios.post(
+                'http://localhost:8000/api/v1/customers/send-bill-email',
+                {
+                    email: selectedCustomer.email,
+                    billHtml,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
             );
 
-            alert('Bill sent successfully!');
+            if (response.status === 200) {
+                alert('Bill sent successfully.');
+                setShowBillModal(false);
+            } else {
+                console.error('Failed to send email:', response.data);
+                alert('Failed to send bill. Please try again.');
+            }
         } catch (error) {
-            console.error('Error sending email:', error);
-            alert('Failed to send the bill.');
+            console.error('Error while sending bill email:', error);
+            alert('An error occurred while sending the bill. Please try again.');
         }
-    };
-
-    const openBillModal = (customer) => {
-        setSelectedCustomer(customer);
-        setShowBillModal(true);
     };
 
     return (
-        <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}>
-            <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6 ">Customer Credit Log!</h1>
+        <div>
+            <div
+                style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}
+                className="p-4 sm:p-6 lg:p-8"
+            >
+                <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-2xl sm:text-3xl lg:text-4xl mb-6">
+                    Customer Credit Log!
+                </h1>
 
-            <div className="customer-controls">
-                <input
-                    type="text"
-                    placeholder="Search by name or society..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-[60%] h-[70px] bg-white shadow-lg rounded-lg p-2 flex-grow border border-gray-300 focus:outline-[gray] focus:ring-0 pl-8 pr-2"
-                />
-                <div className="ml-5 flex flex-col bg-white shadow-lg rounded-lg p-2 flex-grow border border-gray-300">
-                    <label className=''>Filter by Date Range: </label>
-                    <div className='flex space-x-4'>
-                        <input
-                            type="date"
-                            value={dateRange.start}
-                            onChange={e => setDateRange({ ...dateRange, start: e.target.value })}
-                            placeholder="Start Date"
-                            className='border border-blue-500 rounded-lg pl-1 pr-1'
-                        />
-                        <span> - </span>
-                        <input
-                            type="date"
-                            value={dateRange.end}
-                            onChange={e => setDateRange({ ...dateRange, end: e.target.value })}
-                            placeholder="End Date"
-                            className='border border-blue-500 rounded-lg pl-1 pr-1'
-                        />
+                <div className="flex flex-col lg:flex-row items-center lg:items-start lg:space-x-6 space-y-4 lg:space-y-0 mb-6">
+                    <input
+                        type="text"
+                        placeholder="Search by name or society..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full lg:w-[60%] h-[50px] lg:h-[70px] bg-white shadow-lg rounded-lg p-2 border border-gray-300 focus:outline-[gray] focus:ring-0 pl-8 pr-2"
+                    />
+
+                    <div className="flex flex-col bg-white shadow-lg rounded-lg p-2 border border-gray-300 w-full lg:w-auto">
+                        <label className="font-medium mb-1">Filter by Date Range:</label>
+                        <div className="flex flex-col sm:flex-row sm:space-x-4 sm:items-center space-y-2 sm:space-y-0">
+                            <input
+                                type="date"
+                                value={dateRange.start}
+                                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                                placeholder="Start Date"
+                                className="w-full sm:w-auto border border-blue-500 rounded-lg px-2"
+                            />
+                            <span className="hidden sm:block">-</span>
+                            <input
+                                type="date"
+                                value={dateRange.end}
+                                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                                placeholder="End Date"
+                                className="w-full sm:w-auto border border-blue-500 rounded-lg px-2"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="w-full lg:w-auto">
+                        <button
+                            onClick={() => setSelectedCustomer({ newCustomer })}
+                            className="bg-green-600 text-white w-full lg:w-auto px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition duration-300"
+                        >
+                            <FontAwesomeIcon icon={faPlus} /> Add New Customer
+                        </button>
                     </div>
                 </div>
-                <button onClick={() => setSelectedCustomer({ newCustomer })}>
-                    <FontAwesomeIcon icon={faPlus} /> Add New Customer
-                </button>
+
+                {selectedCustomer && selectedCustomer.newCustomer ? (
+                    <AddNewCustomerForm
+                        setNewCustomer={setNewCustomer}
+                        newCustomer={newCustomer}
+                        addNewCustomer={addNewCustomer}
+                        setSelectedCustomer={setSelectedCustomer}
+                    />
+                ) : !selectedCustomer ? (
+                    <CustomerTable filteredCustomers={filteredCustomers} viewDetails={viewDetails} />
+                ) : (
+                    <CustomerDetails
+                        setSelectedCustomer={setSelectedCustomer}
+                        selectedCustomer={selectedCustomer}
+                        deleteItem={deleteItem}
+                        setShowAddNewSaleForm={setShowAddNewSaleForm}
+                        showAddNewSaleForm={showAddNewSaleForm}
+                        deleteCustomer={deleteCustomer}
+                        markAsPaid={markAsPaid}
+                        generateBill={generateBill}
+                        purchaseDetails={purchaseDetails}
+                        setPurchaseDetails={setPurchaseDetails}
+                        addNewPurchase={addNewPurchase}
+                    />
+                )}
+
+                {showBillModal && selectedCustomer && (
+                    <BillModal
+                        selectedCustomer={selectedCustomer}
+                        sendBillEmail={sendBillEmail}
+                        setShowBillModal={setShowBillModal}
+                    />
+                )}
             </div>
-
-            {selectedCustomer && selectedCustomer.newCustomer ? (
-                <AddNewCustomerForm setNewCustomer={setNewCustomer} newCustomer={newCustomer} addNewCustomer={addNewCustomer} setSelectedCustomer={setSelectedCustomer} />
-            ) : !selectedCustomer ? (
-                <CustomerTable filteredCustomers={filteredCustomers} viewDetails={viewDetails} />
-            ) : (
-                <CustomerDetails setSelectedCustomer={setSelectedCustomer} selectedCustomer={selectedCustomer} deleteItem={deleteItem} setShowAddNewSaleForm={setShowAddNewSaleForm} showAddNewSaleForm={showAddNewSaleForm} deleteCustomer={deleteCustomer} markAsPaid={markAsPaid} generateBill={generateBill} purchaseDetails={purchaseDetails} setPurchaseDetails={setPurchaseDetails} addNewPurchase={addNewPurchase} />
-            )}
-
-            {/* {showBillModal && selectedCustomer && (
-                <BillModal selectedCustomer={selectedCustomer} sendBillEmail={sendBillEmail} setShowBillModal={setShowBillModal} />
-            )} */}
-            {showBillModal && selectedCustomer && (
-                <BillModal
-                    selectedCustomer={selectedCustomer}
-                    sendBillEmail={sendBillEmail}
-                    setShowBillModal={setShowBillModal}
-                />
-            )}
+            <div>
+                <Footer/>
+            </div>
         </div>
     );
 };

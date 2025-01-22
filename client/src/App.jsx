@@ -1,12 +1,11 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/sidebar';
 import Dashboard from './components/Dashboard';
 import InventoryManagement from './components/InventoryManagement';
 import SalesLog from './components/SalesLog';
 import CustomerCreditLog from './components/CustomerCreditLog';
-import AddSale from './components/AddNewSaleForm';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import LandingPage from './components/LandingPage';
@@ -26,7 +25,7 @@ function App() {
   
     syncAuthState(); 
   
-    window.addEventListener('storage', syncAuthState); // Listen for changes
+    window.addEventListener('storage', syncAuthState); 
     return () => window.removeEventListener('storage', syncAuthState);
   }, []);
   
@@ -48,7 +47,6 @@ function App() {
                 <Route path="/inventory" element={<InventoryManagement />} />
                 <Route path="/sales" element={<SalesLog />} />
                 <Route path="/credits" element={<CustomerCreditLog />} />
-                <Route path="/add-sale" element={<AddSale />} />
                 <Route path="/sales-log" element={<SalesLog />} />
                 <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
                 <Route path="/profile" element={<Profile />} />

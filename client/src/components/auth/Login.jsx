@@ -14,32 +14,26 @@ const Login = () => {
 		e.preventDefault();
 		try {
 			const url = "http://localhost:8000/api/v1/auth/login";
-			const { data: res } = await axios.post(url, data, {
-				withCredentials: true, // Include cookies in requests
-			});
-			localStorage.setItem("token", res.data);
+			const response = await axios.post(url, data, { withCredentials: true });
+			localStorage.setItem("token", response.data.data);
 			window.location = "/";
 		} catch (error) {
-			if (
-				error.response &&
-				error.response.status >= 400 &&
-				error.response.status <= 500
-			) {
+			if (error.response && error.response.status >= 400 && error.response.status <= 500) {
+				console.error("Error message:", error.response.data.message);
 				setError(error.response.data.message);
 			}
 		}
 	};
 
 	return (
-		<div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
-			<div className="w-[900px] h-[500px] flex rounded-lg shadow-lg">
-				{/* Left Side */}
-				<div className="flex-2 flex flex-col items-center justify-center bg-white rounded-l-lg">
+		<div className="w-full min-h-screen bg-gray-100 flex items-center justify-center p-4">
+			<div className="w-full max-w-[900px] h-auto md:h-[500px] flex rounded-lg shadow-lg overflow-hidden">
+				<div className="flex-1 md:flex-2 flex flex-col items-center justify-center bg-white p-6 md:p-12">
 					<form
-						className="flex flex-col items-center"
+						className="flex flex-col items-center w-full"
 						onSubmit={handleSubmit}
 					>
-						<h1 className="text-4xl mb-6">Login to Your Account</h1>
+						<h1 className="text-2xl md:text-4xl mb-6">Login to Your Account</h1>
 						<input
 							type="email"
 							placeholder="Email"
@@ -47,7 +41,7 @@ const Login = () => {
 							onChange={handleChange}
 							value={data.email}
 							required
-							className="outline-none border-none w-[370px] p-4 rounded-lg bg-gray-200 mb-3 text-sm"
+							className="outline-none border-none w-full md:w-[370px] p-4 rounded-lg bg-gray-200 mb-3 text-sm"
 						/>
 						<input
 							type="password"
@@ -56,25 +50,24 @@ const Login = () => {
 							onChange={handleChange}
 							value={data.password}
 							required
-							className="outline-none border-none w-[370px] p-4 rounded-lg bg-gray-200 mb-3 text-sm"
+							className="outline-none border-none w-full md:w-[370px] p-4 rounded-lg bg-gray-200 mb-3 text-sm"
 						/>
 						{error && (
-							<div className="w-[370px] p-4 mb-3 text-sm bg-red-500 text-white rounded-md text-center">
+							<div className="w-full md:w-[370px] p-4 mb-3 text-sm bg-red-500 text-white rounded-md text-center">
 								{error}
 							</div>
 						)}
 						<button
 							type="submit"
-							className="bg-green-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-green-600 transition"
+							className="bg-green-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:bg-green-600 transition w-full md:w-auto"
 						>
 							Sign In
 						</button>
 					</form>
 				</div>
 
-				{/* Right Side */}
-				<div className="flex-1 flex flex-col items-center justify-center bg-green-500 rounded-r-lg">
-					<h1 className="text-4xl text-white mb-6">Do not have account?</h1>
+				<div className="flex-1 flex flex-col items-center justify-center bg-green-500 p-6 md:p-12 text-center">
+					<h1 className="text-2xl md:text-4xl text-white mb-6">Do not have an account?</h1>
 					<Link to="/signup">
 						<button
 							type="button"
@@ -88,5 +81,6 @@ const Login = () => {
 		</div>
 	);
 };
+
 
 export default Login;

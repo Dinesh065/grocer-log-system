@@ -1,133 +1,191 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Tooltip, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import Footer from "./Footer";
 
 const Profile = () => {
-    const [user, setUser] = useState({
-        name: "",
-        email: "",
-        profilePicture: "",  // This will store the URL of the profile picture
-    });
-    const [error, setError] = useState("");
-    const [imagePreview, setImagePreview] = useState("");  // To preview image before upload
-    const [imageFile, setImageFile] = useState(null); // To hold the file selected by user
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    groceryName: "",
+    groceryAddress: "",
+    phoneNumber: "",
+  });
+  const [error, setError] = useState("");
+  const [editingFields, setEditingFields] = useState({});
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-    // Fetch user data (GET)
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const { data } = await axios.get("http://localhost:8000/api/v1/users/me", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token to authenticate
-                    },
-                });
-                setUser(data); // Set user data to state
-                setImagePreview(data.profilePicture || "/default-profile.jpg"); // Set default if no profile picture
-            } catch (err) {
-                setError("Failed to load user data.");
-            }
-        };
-        fetchUser();
-    }, []); // Only run this effect on component mount
-
-    // Handle input changes (name)
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUser({ ...user, [name]: value });
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:8000/api/v1/users/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setUser(data);
+      } catch (err) {
+        setError("Failed to load user data.");
+      }
     };
+    fetchUser();
+  }, []);
 
-    // Handle image file selection
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file)); // Preview the selected image
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const toggleEdit = (field) => {
+    setEditingFields((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const updateData = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        groceryName: user.groceryName,
+        groceryAddress: user.groceryAddress,
+        phoneNumber: user.phoneNumber,
+      };
+
+      const { data } = await axios.put("http://localhost:8000/api/v1/users/me", updateData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setUser(data);
+      setEditingFields({});
+      alert("Profile updated successfully!");
+    } catch (err) {
+      setError("Failed to update profile.");
+    }
+  };
+
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    try {
+      if (!oldPassword || !newPassword) {
+        alert("Both old and new passwords are required.");
+        return;
+      }
+
+      await axios.put(
+        "http://localhost:8000/api/v1/users/change-password",
+        { oldPassword, newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-    };
+      );
+      setOldPassword("");
+      setNewPassword("");
+      alert("Password updated successfully!");
+    } catch (err) {
+      console.error("Failed to update password:", err.response?.data?.message || err.message);
+      setError("Failed to update password.");
+    }
+  };
 
-    // Handle form submission (PUT request to update profile)
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const formData = new FormData();
-            formData.append("name", user.name);
-            formData.append("profilePicture", imageFile); // Append the selected image file
 
-            await axios.put(
-                "http://localhost:8000/api/v1/users/me", // PUT endpoint to update profile
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token for authentication
-                        "Content-Type": "multipart/form-data", // Required for file uploads
-                    },
-                }
-            );
-            alert("Profile updated successfully!");
-        } catch (err) {
-            setError("Failed to update profile.");
-        }
-    };
+  return (
+    <div>
+      <div className="p-8 max-w-md mx-auto bg-gradient-to-r from-blue-100 via-white to-blue-100 shadow-lg rounded-xl space-y-6">
+        <h1 className="text-3xl font-extrabold text-center text-gray-800">My Profile</h1>
+        {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-    return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-6">Profile</h1>
-            {error && <div className="text-red-500 mb-4">{error}</div>}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col items-center">
-                    <label htmlFor="profilePicture" className="mb-4">
-                        <img
-                            src={imagePreview}
-                            alt="Profile"
-                            className="w-32 h-32 rounded-full object-cover border-4 border-gray-300"
-                        />
-                    </label>
-                    <input
-                        type="file"
-                        id="profilePicture"
-                        name="profilePicture"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                    />
-                </div>
+          {[
+            { label: "First Name", field: "firstName" },
+            { label: "Last Name", field: "lastName" },
+            { label: "Email", field: "email", disabled: true },
+            { label: "Grocery Name", field: "groceryName" },
+            { label: "Business Address", field: "groceryAddress" },
+            { label: "Phone Number", field: "phoneNumber" },
+          ].map(({ label, field, disabled }) => (
+            <div key={field} className="flex items-center justify-between">
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700">{label}</label>
+                <input
+                  type="text"
+                  id={field}
+                  name={field}
+                  value={user[field] || ""}
+                  onChange={handleChange}
+                  disabled={disabled || !editingFields[field]}
+                  className={`border border-gray-300 rounded-md p-2 w-full ${!editingFields[field] && "bg-gray-100 text-gray-500"
+                    }`}
+                />
+              </div>
+              {!disabled && (
+                <Tooltip title={editingFields[field] ? "Save" : "Edit"} arrow>
+                  <IconButton
+                    onClick={() => toggleEdit(field)}
+                    color={editingFields[field] ? "primary" : "default"}
+                  >
+                    {editingFields[field] ? <SaveIcon /> : <EditIcon />}
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
+          ))}
 
-                <div>
-                    <label htmlFor="name" className="block text-sm font-medium">
-                        Name
-                    </label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={user.name}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium">
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                        disabled
-                    />
-                </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Change Password</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium">Old Password</label>
+                <input
+                  type="password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className="border border-gray-300 rounded-md p-2 w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="border border-gray-300 rounded-md p-2 w-full"
+                />
+              </div>
+              <button
+                onClick={handlePasswordChange}
+                className="bg-red-500 text-white rounded-md py-2 px-4 hover:bg-red-600 w-full"
+              >
+                Update Password
+              </button>
+            </div>
+          </div>
 
-                <button
-                    type="submit"
-                    className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600"
-                >
-                    Save Changes
-                </button>
-            </form>
-        </div>
-    );
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-green-400 to-green-500 text-white rounded-lg py-2 px-4 text-lg font-semibold shadow-md hover:from-green-500 hover:to-green-600"
+          >
+            Save Changes
+          </button>
+        </form>
+      </div>
+      <div>
+        <Footer />
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

@@ -3,11 +3,11 @@ import InventoryPagination from "./InventoryPagination";
 import InventoryToolbar from "./InventoryToolbar";
 import InventoryTable from "./InventoryTable";
 import AddNewItemForm from "./AddNewItemForm";
-import axios from "axios"
+import axios from "axios";
+import Footer from "./Footer";
 import { useDashboard } from "./DashboardContext";
 
 const Inventory = () => {
-    
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState(items);
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,15 +19,19 @@ const Inventory = () => {
     const [showForm, setShowForm] = useState(false);
     const [editItemId, setEditItemId] = useState(null);
     const [updatedItem, setUpdatedItem] = useState({});
-    const [editItemSku, setEditItemSku] = useState(null); // To track the SKU of the item being edited
-
+    const [editItemSku, setEditItemSku] = useState(null);
     const { setDashboardData } = useDashboard();
 
-    // Load items from databas
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/v1/inventory/items");
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get("http://localhost:8000/api/v1/inventory/items", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 if (response.status === 200) {
                     setItems(response.data);
                     setFilteredItems(response.data);
@@ -43,7 +47,6 @@ const Inventory = () => {
     }, []);
 
     useEffect(() => {
-        // const totalItems = items.reduce((sum, item) => sum + (item.qty || 0), 0); // Assuming each item has a `qty` field
         const totalItems = items.length;
         setDashboardData((prev) => ({
             ...prev,
@@ -52,34 +55,53 @@ const Inventory = () => {
     }, [items, setDashboardData]);
 
     useEffect(() => {
-        setFilteredItems(items);
-    }, [items]);
+        let newFilteredItems = items;
 
-    const handleSearch = () => {
-        const newFilteredItems = items
-            .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()) || item.sku.includes(searchTerm))
-            .filter(item => (filterStatus ? item.status === filterStatus : true))
-            .sort((a, b) => sortBy === 'name' ? a.name.localeCompare(b.name) : sortBy === 'qty' ? b.qty - a.qty : 0);
+        if (searchTerm) {
+            newFilteredItems = newFilteredItems.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.sku.includes(searchTerm)
+            );
+        }
+
+        if (filterStatus) {
+            newFilteredItems = newFilteredItems.filter(
+                (item) => item.status?.toLowerCase() === filterStatus.toLowerCase()
+            );
+        }
+
+        if (sortBy) {
+            newFilteredItems = [...newFilteredItems].sort((a, b) =>
+                sortBy === "name"
+                    ? a.name.localeCompare(b.name)
+                    : sortBy === "qty"
+                        ? b.qty - a.qty
+                        : 0
+            );
+        }
 
         setFilteredItems(newFilteredItems);
-        setCurrentPage(1);
-    };
+    }, [items, searchTerm, filterStatus, sortBy]);
 
     const handleClearSearch = () => {
-        setSearchTerm('');
-        setFilteredItems(items);
-        setCurrentPage(1);
+        setSearchTerm("");
     };
 
     const handleAddNewItem = async (newItem) => {
         try {
-            const response = await axios.post("http://localhost:8000/api/v1/inventory/addnewitem", newItem);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.post("http://localhost:8000/api/v1/inventory/addnewitem", newItem, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setItems([...items, response.data]);
             setFilteredItems([...items, response.data]);
             setShowForm(false);
-            console.log("Data fetched: ", response);
         } catch (error) {
-            console.error("Error fetching inventory:", error)
+            console.error("Error adding new item:", error);
         }
     };
 
@@ -90,23 +112,33 @@ const Inventory = () => {
             [field]: value,
         }));
     };
-    
+
     const handleUpdate = (sku) => {
         const itemToEdit = items.find((item) => item.sku === sku);
         if (!itemToEdit) {
             console.error("Item not found for SKU:", sku);
             return;
         }
-        setUpdatedItem({ ...itemToEdit }); 
-        setEditItemSku(sku); 
+        setUpdatedItem({ ...itemToEdit });
+        setEditItemSku(sku);
     };
 
     const saveChanges = async () => {
         try {
-            const response = await axios.put(`http://localhost:8000/api/v1/inventory/update/${editItemSku}`, updatedItem);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(
+                `http://localhost:8000/api/v1/inventory/update/${editItemSku}`,
+                updatedItem,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             if (response.status === 200) {
                 const newItems = items.map((item) =>
-                    item.sku === editItemSku ? { ...item, ...updatedItem } : item
+                    item.sku === editItemSku ? { ...item, ...response.data.data } : item
                 );
                 setItems(newItems);
                 setFilteredItems(newItems);
@@ -120,14 +152,19 @@ const Inventory = () => {
     };
 
     const handleDelete = async (sku) => {
-        console.log("Item to delete (SKU):", sku);
         if (!sku) {
             console.error("SKU is undefined");
             return;
         }
 
         try {
-            const response = await axios.delete(`http://localhost:8000/api/v1/inventory/deletebysku/${sku}`);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.delete(`http://localhost:8000/api/v1/inventory/deletebysku/${sku}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (response.status === 200) {
                 const newItems = items.filter((item) => item.sku !== sku);
                 setItems(newItems);
@@ -141,48 +178,54 @@ const Inventory = () => {
 
     const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-    // 
+    //
     return (
-        <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}>
-            <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6 ">
-                Welcome to Inventory Management!
-            </h1>
+        <div>
+            <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}>
+                <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6 ">
+                    Welcome to Inventory Management!
+                </h1>
 
-            <InventoryToolbar
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                filterStatus={filterStatus}
-                setFilterStatus={setFilterStatus}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                handleSearch={handleSearch}
-                handleClearSearch={handleClearSearch}
-                showAddNewItemForm={() => setShowForm(true)}
-            />
+                <InventoryToolbar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    filterStatus={filterStatus}
+                    setFilterStatus={setFilterStatus}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    handleClearSearch={handleClearSearch}
+                    showAddNewItemForm={() => setShowForm(true)}
+                    items={items}
+                />
 
-            {showForm ? (
-                <AddNewItemForm handleAddNewItem={handleAddNewItem} onClose={() => setShowForm(false)} />
-            ) : (
-                <>
-                    <InventoryTable
-                        items={paginatedItems}
-                        handleUpdate={handleUpdate}
-                        saveChanges={saveChanges}
-                        handleDelete={handleDelete}
-                        updatedItem={updatedItem}
-                        editItemSku={editItemSku}
-                        handleEditChange={handleEditChange}
-                    />
-                    <InventoryPagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        setCurrentPage={setCurrentPage}
-                    />
-                </>
-            )}
+                {showForm ? (
+                    <AddNewItemForm handleAddNewItem={handleAddNewItem} onClose={() => setShowForm(false)} />
+                ) : (
+                    <>
+                        <InventoryTable
+                            items={paginatedItems}
+                            handleUpdate={handleUpdate}
+                            saveChanges={saveChanges}
+                            handleDelete={handleDelete}
+                            updatedItem={updatedItem}
+                            editItemSku={editItemSku}
+                            handleEditChange={(e, field) =>
+                                setUpdatedItem((prevState) => ({ ...prevState, [field]: e.target.value }))
+                            }
+                        />
+                        <InventoryPagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    </>
+                )}
+            </div>
+            <div>
+                <Footer />
+            </div>
         </div>
     );
 };
 
 export default Inventory;
-

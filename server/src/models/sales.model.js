@@ -13,19 +13,20 @@ const salesSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
-        min: 1, // Ensure quantity is at least 1
+        min: 1, 
     },
     pricePerQuantity: {
         type: Number,
         required: true,
-        min: 0, // Ensure price is non-negative
+        min: 0,  
     },
     total: {
         type: Number,
         required: true,
     },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },  
 }, {
-    timestamps: true, // Automatically adds createdAt and updatedAt timestamps
+    timestamps: true,  
 });
 
 export const Sale =mongoose.model('Sale', salesSchema);

@@ -1,35 +1,44 @@
 import express from "express";
-import { getDashboardData } from "../controllers/user.controller.js";
 import { InventoryItem } from "../models/inventory.models.js";
 import { Customer } from "../models/Customer.model.js";
 import { Sale } from "../models/sales.model.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+import mongoose from "mongoose";
 
 const dashboardRoutes = express.Router();
 
-dashboardRoutes.get("/dashboard", async(req,res) => {
+dashboardRoutes.get("/dashboard", verifyJWT, async (req, res) => {
     try {
-        const totalItems = await InventoryItem.countDocuments();
-        const totalCredits = await Customer.aggregate([
+        const userId = new mongoose.Types.ObjectId(req.user._id);
+
+        const totalItems = await InventoryItem.countDocuments({ userId });
+
+        const totalCreditsResult = await Customer.aggregate([
+            { $match: { userId } },
             { $group: { _id: null, total: { $sum: "$totalPending" } } }
         ]);
-        const totalSales = await Sale.aggregate([
+        const totalCredits = totalCreditsResult.length > 0 ? totalCreditsResult[0].total : 0;
+
+        const totalSalesResult = await Sale.aggregate([
+            { $match: { userId } },
             { $group: { _id: null, total: { $sum: "$total" } } }
         ]);
+        const totalSales = totalSalesResult.length > 0 ? totalSalesResult[0].total : 0;
 
-        const inventoryEntries = await InventoryItem.find().limit(3);
-        const creditEntries = await Customer.find().limit(3);
-        const salesEntries = await Sale.find().limit(3);
+        const inventoryEntries = await InventoryItem.find({ userId }).limit(3);
+        const creditEntries = await Customer.find({ userId }).limit(3);
+        const salesEntries = await Sale.find({ userId }).limit(3);
 
         res.json({
             totalItems,
-            totalCredits: totalCredits[0]?.total || 0,
-            totalSales: totalSales[0]?.total || 0,
+            totalCredits,
+            totalSales,
             inventoryEntries,
             creditEntries,
             salesEntries
         });
     } catch (error) {
-        console.error("Error in dashboard data:", error);  // Log the error
+        console.error("Error in dashboard data:", error); 
         res.status(500).json({ message: error.message });
     }
 });

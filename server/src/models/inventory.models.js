@@ -19,15 +19,28 @@ const inventoryItemSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['In stock', 'Low', 'Out of stock'],
+        enum: ['In Stock', 'Low Stock', 'Out of Stock'],
         required: true,
     },
     dateAdded: {
         type: Date,
         default: Date.now,
     },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },  
 }, {
-    timestamps: true, // Adds createdAt and updatedAt fields
+    timestamps: true,  
 });
+
+inventoryItemSchema.pre("save", function (next) {
+    if (this.qty === 0) {
+        this.status = "Out of Stock";
+    } else if (this.qty < 10) {
+        this.status = "Low Stock";
+    } else {
+        this.status = "In Stock";
+    }
+    next();
+});
+
 
 export const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);

@@ -1,28 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './StockAlert.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const StockAlert = () => {
-  const alerts = [
-    { message: "Low stock on Item A", link: "/inventory", cta: "Check Inventory", color: "text-red-500" },
-    { message: "Item B out of stock", link: "/inventory", cta: "Restock Now", color: "text-yellow-500" },
-    { message: "New order placed for Item C", link: "/orders", cta: "View Orders", color: "text-green-500" },
-    { message: "Stock level critical for Item D", link: "/inventory", cta: "Check Now", color: "text-orange-500" }
-  ];
-
+  const [alerts, setAlerts] = useState([]);
   const [currentAlert, setCurrentAlert] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentAlert((prevAlert) => (prevAlert + 1) % alerts.length);
-    }, 8000); // Change alert every 8 seconds
+  const fetchFestivalData = async () => {
+    try {
+      const apiKey = "ScftEuhUctcBzGDDpxABhB4vZFAQy9sE";  
+      const country = "IN";  
+      const year = new Date().getFullYear();
 
-    return () => clearInterval(interval);
-  }, [alerts.length]);
+      const response = await axios.get(`https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`);
+      
+      const holidays = response.data.response.holidays;
+
+      const today = new Date();
+      const upcomingFestivals = holidays
+        .filter((holiday) => {
+          const holidayDate = new Date(holiday.date.iso);
+          const diffInDays = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+          return diffInDays >= 0 && diffInDays <= 7; 
+        })
+        .map((holiday) => ({
+          message: `${holiday.name} is coming! Prepare now.`,
+          link: "/inventory",
+          cta: "Stock Up Now",
+          color: "text-green-500",
+        }));
+
+      return upcomingFestivals;
+    } catch (error) {
+      console.error("Error fetching festival data:", error);
+      return [];
+    }
+  };
+
+  const fetchStockAlerts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:8000/api/v1/inventory/items", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const stockAlerts = response.data
+        .filter((item) => item.status === "Low Stock" || item.status === "Out of Stock")
+        .map((item) => ({
+          message: `${item.name} is ${item.status.toLowerCase()}`,
+          link: "/inventory",
+          cta: "Check Inventory",
+          color: item.status === "Low Stock" ? "text-yellow-500" : "text-red-500",
+        }));
+
+      return stockAlerts;
+    } catch (error) {
+      console.error("Error fetching stock alerts:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      const festivalAlerts = await fetchFestivalData();
+      const stockAlerts = await fetchStockAlerts();
+
+      setAlerts([...festivalAlerts, ...stockAlerts]);
+    };
+
+    fetchAlerts();
+  }, []);
+
+  useEffect(() => {
+    if (alerts.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentAlert((prevAlert) => (prevAlert + 1) % alerts.length);
+      }, 8000);
+
+      return () => clearInterval(interval);
+    }
+  }, [alerts]);
+
+  if (alerts.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="stock-alert-container">
-      <div className="stock-alert-message">
+    <div className="stock-alert-container bg-gray-100 p-4 rounded-lg shadow-lg">
+      <div className="stock-alert-message text-center">
         <p className={`font-semibold ${alerts[currentAlert].color}`}>
           {alerts[currentAlert].message}{" "}
           <span>| </span>
