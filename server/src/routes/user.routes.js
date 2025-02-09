@@ -5,11 +5,22 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import DemoUser from "../models/demo.models.js";
 import bcrypt from "bcrypt"
+import zod from "zod"
 const router = Router();
+
+const signupSchema=zod.object({
+    firstName:zod.string().min(5),
+    lastName:zod.string().min(5),
+    email:zod.string().email(),
+    password: zod.string().min(6).regex(/^[a-zA-Z0-9]*$/, "Password must be alphanumeric")
+})
 
 router.post("/signup", async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
-
+    const response = signupSchema.safeParse(req.body);
+    if(!response.success){
+        return res.status(400).json({ message: "Please provide valid customer details." });
+    }
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -18,11 +29,12 @@ router.post("/signup", async (req, res) => {
                 .json({ statusCode: 400, message: "User already exists" });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             firstName,
             lastName,
             email,
-            password,
+            password: hashedPassword,
         });
 
         await newUser.save();
