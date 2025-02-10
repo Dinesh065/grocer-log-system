@@ -2,8 +2,18 @@ import express from "express";
 import { Sale } from "../models/sales.model.js"
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import zod, { date } from "zod"
+
 const salesRoutes = express.Router();
 const router = Router();
+
+const addnewsaleSchema = zod.object({
+    product:zod.string(),
+    date:zod.date(),
+    quantity:zod.number(),
+    pricePerQuantity:zod.number(),
+    total:zod.number()
+})
 
 salesRoutes.get("/getsales",verifyJWT, async (req, res) => {
     try {
@@ -18,10 +28,14 @@ salesRoutes.get("/getsales",verifyJWT, async (req, res) => {
 salesRoutes.post('/addnewsale',verifyJWT, async (req,res) => {
     try {
         const { product, date, quantity, pricePerQuantity, total } = req.body;
-
-        if(!product || !date || quantity<= 0 || pricePerQuantity <= 0) {
+        const response = addnewsaleSchema.safeParse(req.body);
+        if(!response.success){
             return res.status(400).json({message: "Please provide valid sale details."});
         }
+
+        // if(!product || !date || quantity<= 0 || pricePerQuantity <= 0) {
+            
+        // }
 
         const newSale = new Sale({
             userId: req.user.id,

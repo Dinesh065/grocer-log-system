@@ -1,11 +1,19 @@
 import express from "express";
-import { Customer } from "../models/Customer.model.js";
+import { Customer } from "../models/customer.model.js";
 import nodemailer from "nodemailer";
 import env from "dotenv";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import zod from "zod";
 env.config();
 
 const customerRoutes = express.Router()
+
+const newCustomerSchema = zod.object({
+    name:zod.string(),
+    societyName:zod.string(),
+    email:zod.string().email(),
+    totalPending:zod.number().positive(),
+})
 
 customerRoutes.get('/',verifyJWT, async (req, res) => {
     try {
@@ -21,10 +29,13 @@ customerRoutes.get('/',verifyJWT, async (req, res) => {
 customerRoutes.post('/addnewcustomer', verifyJWT, async (req, res) => {
     try {
         const { name, flatNo, societyName, email, totalPending, purchases, startDate, lastPurchase, status } = req.body;
-
-        if (!name || !societyName || !email || totalPending < 0) {
+        const response = newCustomerSchema.safeParse(name,societyName,email,totalPending);
+        if(!response.success){
             return res.status(400).json({ message: "Please provide valid customer details." });
         }
+        // if (!name || !societyName || !email || totalPending < 0) {
+        //     return res.status(400).json({ message: "Please provide valid customer details." });
+        // }
 
         const newCustomer = new Customer({
             userId: req.user._id, 
