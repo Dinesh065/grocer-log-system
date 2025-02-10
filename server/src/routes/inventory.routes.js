@@ -3,10 +3,16 @@ import { InventoryItem } from "../models/inventory.models.js";
 import { Router } from "express";
 import { asyncHandler } from "../utils/asynchandler.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import zod from "zod";
 
 const inventoryRoutes = express.Router();
 const router = Router();
  
+const additemSchema = zod.object({
+    name:zod.string(),
+    qty:zod.number()
+})
+
 const generateSku = (name) => {
     const timestamp = Date.now().toString(36); // Base36 timestamp
     const uniqueSuffix = Math.random().toString(36).substring(2, 7).toUpperCase(); // Random unique string
@@ -24,9 +30,10 @@ inventoryRoutes.get('/items',verifyJWT, async (req, res) => {
 
 inventoryRoutes.post('/addnewitem', verifyJWT, async (req, res) => {
     try {
-        const { name, qty } = req.body;
 
-        if (!name || !qty) {
+        const { name, qty } = req.body;
+        const response = additemSchema.safeParse(req.body);
+        if(!response.success){
             return res.status(400).json({ message: "Name and Quantityare required." });
         }
 
