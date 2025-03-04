@@ -9,10 +9,10 @@ env.config();
 const customerRoutes = express.Router()
 
 const newCustomerSchema = zod.object({
-    name:zod.string(),
-    societyName:zod.string(),
-    email:zod.string().email(),
-    totalPending:zod.number().positive(),
+    // name:zod.string(),
+    // societyName:zod.string(),
+    // email:zod.string().email(),
+    // totalPending:zod.number().positive(),
 })
 
 customerRoutes.get('/',verifyJWT, async (req, res) => {
@@ -29,10 +29,11 @@ customerRoutes.get('/',verifyJWT, async (req, res) => {
 customerRoutes.post('/addnewcustomer', verifyJWT, async (req, res) => {
     try {
         const { name, flatNo, societyName, email, totalPending, purchases, startDate, lastPurchase, status } = req.body;
-        const response = newCustomerSchema.safeParse(name,societyName,email,totalPending);
-        if(!response.success){
-            return res.status(400).json({ message: "Please provide valid customer details." });
-        }
+        // const response = newCustomerSchema.safeParse(name,societyName,email,totalPending);
+        // console.log(response)
+        // if(!response.success){
+        //     return res.status(400).json({ message: "Please provide valid customer details." });
+        // }
         // if (!name || !societyName || !email || totalPending < 0) {
         //     return res.status(400).json({ message: "Please provide valid customer details." });
         // }

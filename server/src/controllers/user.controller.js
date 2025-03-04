@@ -6,7 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 import { InventoryItem } from '../models/inventory.models.js';
-import { Customer } from '../models/Customer.model.js';
+// import { Customer } from '../models/Customer.model.js';
 import { Sale } from '../models/sales.model.js';
 
 

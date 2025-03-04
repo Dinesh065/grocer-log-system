@@ -102,9 +102,9 @@ const Profile = () => {
 
 
   return (
-    <div>
-      <div className="p-8 max-w-md mx-auto bg-gradient-to-r from-blue-100 via-white to-blue-100 shadow-lg rounded-xl space-y-6">
-        <h1 className="text-3xl font-extrabold text-center text-gray-800">My Profile</h1>
+    <div className="bg-[#050a14] pt-3">
+      <div className="p-8 mb-3 max-w-lg mx-auto bg-[#0d1321] shadow-[0px_4px_10px_rgba(0,0,0,0.7)] rounded-xl space-y-6">
+        <h1 className="text-3xl font-extrabold text-center text-white">My Profile</h1>
         {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
@@ -118,7 +118,7 @@ const Profile = () => {
           ].map(({ label, field, disabled }) => (
             <div key={field} className="flex items-center justify-between">
               <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700">{label}</label>
+                <label className="block text-sm font-medium text-gray-300">{label}</label>
                 <input
                   type="text"
                   id={field}
@@ -126,7 +126,8 @@ const Profile = () => {
                   value={user[field] || ""}
                   onChange={handleChange}
                   disabled={disabled || !editingFields[field]}
-                  className={`border border-gray-300 rounded-md p-2 w-full ${!editingFields[field] && "bg-gray-100 text-gray-500"
+                  className={`border border-gray-600 rounded-md p-2 w-full bg-[#1a2235] text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                !editingFields[field] && "bg-gray-700 text-gray-400"
                     }`}
                 />
               </div>
@@ -144,24 +145,24 @@ const Profile = () => {
           ))}
 
           <div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">Change Password</h2>
+            <h2 className="text-lg font-bold text-white mb-2">Change Password</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium">Old Password</label>
+                <label className="block text-sm font-medium text-gray-300">Old Password</label>
                 <input
                   type="password"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="border border-gray-300 rounded-md p-2 w-full"
+                  className="border border-gray-600 rounded-md p-2 w-full bg-[#1a2235]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">New Password</label>
+                <label className="block text-sm font-medium text-gray-300">New Password</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="border border-gray-300 rounded-md p-2 w-full"
+                  className="border border-gray-600 rounded-md p-2 w-full bg-[#1a2235]"
                 />
               </div>
               <button

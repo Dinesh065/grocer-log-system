@@ -178,14 +178,10 @@ const Inventory = () => {
 
     const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-    //
+    
     return (
         <div>
-            <div style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}>
-                <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-4xl mb-6 ">
-                    Welcome to Inventory Management!
-                </h1>
-
+            <div style={{ backgroundColor: '#050a14', minHeight: '100vh', padding: '20px' }}>
                 <InventoryToolbar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}

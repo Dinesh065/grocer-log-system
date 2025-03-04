@@ -50,11 +50,13 @@ table tbody tr:nth-child(odd) {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  color:white;
 }
 
 .pagination button {
   padding: 8px 12px;
   margin: 0 5px;
+  color: white;
 }
 
 .pagination span {
@@ -84,10 +86,9 @@ table tbody tr:nth-child(odd) {
 
 .action-icon {
   margin-right: 30px;
-
 }
 .mui-add-button {
-  background-color: #1976d2;  /* MUI primary blue color */
+  background-color: #1976d2;  
   border: none;
   color: white;
   padding: 10px 20px;
@@ -101,17 +102,17 @@ table tbody tr:nth-child(odd) {
 }
 
 .mui-icon {
-  font-size: 24px;  /* Set icon size */
+  font-size: 24px;   
   transition: color 0.3s, transform 0.3s;
 }
 
 .mui-add-button:hover {
-  background-color: #1565c0;  /* Darker blue on hover */
+  background-color: #1565c0;   
   transform: scale(1.1);
 }
 
 .mui-icon:hover {
-  color: yellow;  /* Icon color changes on hover */
+  color: yellow;   
 }
 
 .customer-controls {
@@ -176,10 +177,11 @@ table.customer-table button:hover {
 
 /* Add New Customer Form */
 .add-customer-form {
-  background-color: #f8f9fa;
+  background-color: #121826;  
   padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
+  color: #ffffff;  
 }
 
 .add-customer-form input {
@@ -187,12 +189,23 @@ table.customer-table button:hover {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  border: 1px solid #ced4da;
+  border: 1px solid #374151;
+  background-color: #1E293B; 
+  color: #ffffff;  
   font-size: 1rem;
 }
 
+.add-customer-form input::placeholder {
+  color: #94a3b8;  
+}
+
+.add-customer-form input:focus {
+  border-color: #0d6efd;  
+  outline: none;
+}
+
 .add-customer-form button {
-  background-color: #17a2b8;
+  background-color: #0d6efd; 
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -203,90 +216,10 @@ table.customer-table button:hover {
 }
 
 .add-customer-form button:hover {
+  background-color: #0a58ca;  
+}
+
+
+.add-customer-form button:hover {
   background-color: #138496;
-}
-
-/* Customer Details Card */
-.customer-details {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.customer-details h3 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-}
-
-.purchase-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.purchase-table th, .purchase-table td {
-  padding: 10px;
-  border-bottom: 1px solid #ced4da;
-}
-
-.purchase-table th {
-  background-color: #007bff;
-  color: white;
-}
-
-.purchase-table td {
-  background-color: #f8f9fa;
-}
-
-.customer-details button {
-  margin: 10px 0;
-  background-color: #17a2b8;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-right: 20px;
-}
-
-.customer-details .purchase-button:hover {
-  background-color: #138496;
-}
-
-.customer-details button.mark-as-paid {
-  background-color: #28a745;
-}
-
-.customer-details button.mark-as-paid:hover {
-  background-color: #218838;
-}
-
-.customer-details .purchase-button{
-  background-color: rgb(39, 147, 201);
-}
-
-.customer-details .purchase-button:hover {
-  background-color: #138496;
-}
-.customer-details .close-button{
-  background-color: rgb(254, 60, 60);
-  transition: background-color 0.3s ease;
-}
-
-.close-button:hover{
-  background-color: red;
-}
-
-.customer-details .delete-button_1{
-  background-color: rgb(254, 60, 60);
-}
-.customer-details .delete-button_1:hover{
-  background-color: red;
-}
-
-.customer-details .genereate-bill{
-  background-color: rgb(29, 199, 218);
-}
-.customer-details .genereate-bill:hover{
-  background-color: rgb(25, 177, 248);
 }

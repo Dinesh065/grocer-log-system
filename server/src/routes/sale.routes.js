@@ -9,7 +9,7 @@ const router = Router();
 
 const addnewsaleSchema = zod.object({
     product:zod.string(),
-    date:zod.date(),
+    date: zod.preprocess((val) => new Date(val), zod.date()),
     quantity:zod.number(),
     pricePerQuantity:zod.number(),
     total:zod.number()
@@ -32,10 +32,6 @@ salesRoutes.post('/addnewsale',verifyJWT, async (req,res) => {
         if(!response.success){
             return res.status(400).json({message: "Please provide valid sale details."});
         }
-
-        // if(!product || !date || quantity<= 0 || pricePerQuantity <= 0) {
-            
-        // }
 
         const newSale = new Sale({
             userId: req.user.id,

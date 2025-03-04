@@ -8,12 +8,12 @@ const StockAlert = () => {
 
   const fetchFestivalData = async () => {
     try {
-      const apiKey = "ScftEuhUctcBzGDDpxABhB4vZFAQy9sE";  
-      const country = "IN";  
+      const apiKey = "ScftEuhUctcBzGDDpxABhB4vZFAQy9sE";
+      const country = "IN";
       const year = new Date().getFullYear();
 
       const response = await axios.get(`https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`);
-      
+
       const holidays = response.data.response.holidays;
 
       const today = new Date();
@@ -21,7 +21,7 @@ const StockAlert = () => {
         .filter((holiday) => {
           const holidayDate = new Date(holiday.date.iso);
           const diffInDays = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
-          return diffInDays >= 0 && diffInDays <= 7; 
+          return diffInDays >= 0 && diffInDays <= 7;
         })
         .map((holiday) => ({
           message: `${holiday.name} is coming! Prepare now.`,
@@ -88,12 +88,12 @@ const StockAlert = () => {
   }
 
   return (
-    <div className="stock-alert-container bg-gray-100 p-4 rounded-lg shadow-lg">
+    <div className="stock-alert-container bg-[#0d1321] p-4 rounded-lg shadow-lg">
       <div className="stock-alert-message text-center">
         <p className={`font-semibold ${alerts[currentAlert].color}`}>
           {alerts[currentAlert].message}{" "}
           <span>| </span>
-          <Link to={alerts[currentAlert].link} className="text-blue-600 underline">
+          <Link to={alerts[currentAlert].link} className="text-[#00A6FB] underline">
             {alerts[currentAlert].cta}
           </Link>
         </p>

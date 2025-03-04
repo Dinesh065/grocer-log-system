@@ -2,14 +2,13 @@
     0% {
         transform: translateX(400%);
     }
-
     100% {
         transform: translateX(-100%);
     }
 }
 
 .stock-alert-container {
-    background-color: aqua;
+    background-color: #0d1321;   
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
@@ -17,6 +16,7 @@
     margin: 0;
     display: flex;
     align-items: center;
+    border: 1px solid #ffffff33; 
 }
 
 .stock-alert-message {
@@ -24,9 +24,9 @@
     animation: marquee 15s linear infinite;
     padding: 0;
     margin: 0;
+    color: #ffffff;  
 }
 
 .table-header {
-    background-color: rgb(0, 123, 255);
+    background-color: #1a1a2e;  
 }
-  

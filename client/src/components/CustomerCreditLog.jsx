@@ -342,39 +342,35 @@ const CustomerCredit = () => {
     return (
         <div>
             <div
-                style={{ backgroundColor: 'rgba(255, 228, 196, 0.8)', minHeight: '100vh', padding: '20px' }}
-                className="p-4 sm:p-6 lg:p-8"
+                style={{ backgroundColor: '#050a14', minHeight: '100vh', padding: '20px' }}
+                className="p-4 sm:p-6 lg:p-8 text-white"
             >
-                <h1 className="text-center bg-pink-200 text-pink-700 shadow-lg font-bold py-4 rounded-lg text-2xl sm:text-3xl lg:text-4xl mb-6">
-                    Customer Credit Log!
-                </h1>
-
                 <div className="flex flex-col lg:flex-row items-center lg:items-start lg:space-x-6 space-y-4 lg:space-y-0 mb-6">
                     <input
                         type="text"
                         placeholder="Search by name or society..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full lg:w-[60%] h-[50px] lg:h-[70px] bg-white shadow-lg rounded-lg p-2 border border-gray-300 focus:outline-[gray] focus:ring-0 pl-8 pr-2"
+                        className="w-full lg:w-[60%] h-[50px] lg:h-[70px] bg-[#0d1321] shadow-[0px_4px_10px_rgba(0,0,0,0.7)]  rounded-lg p-2 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 text-white placeholder-gray-400 pl-8 pr-2"
                     />
 
-                    <div className="flex flex-col bg-white shadow-lg rounded-lg p-2 border border-gray-300 w-full lg:w-auto">
-                        <label className="font-medium mb-1">Filter by Date Range:</label>
+                    <div className="flex flex-col bg-[#0d1321] shadow-[0px_4px_10px_rgba(0,0,0,0.7)] rounded-lg p-2 border border-gray-700 w-full lg:w-auto">
+                        <label className="font-medium mb-1 text-gray-300">Filter by Date Range:</label>
                         <div className="flex flex-col sm:flex-row sm:space-x-4 sm:items-center space-y-2 sm:space-y-0">
                             <input
                                 type="date"
                                 value={dateRange.start}
                                 onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
                                 placeholder="Start Date"
-                                className="w-full sm:w-auto border border-blue-500 rounded-lg px-2"
+                                className="w-full sm:w-auto border border-gray-600 rounded-lg px-2 bg-gray-800 text-white focus:ring-gray-500"
                             />
-                            <span className="hidden sm:block">-</span>
+                            <span className="hidden sm:block text-gray-400">-</span>
                             <input
                                 type="date"
                                 value={dateRange.end}
                                 onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
                                 placeholder="End Date"
-                                className="w-full sm:w-auto border border-blue-500 rounded-lg px-2"
+                                className="w-full sm:w-auto border border-gray-600 rounded-lg px-2 bg-gray-800 text-white focus:ring-gray-500"
                             />
                         </div>
                     </div>
@@ -382,7 +378,7 @@ const CustomerCredit = () => {
                     <div className="w-full lg:w-auto">
                         <button
                             onClick={() => setSelectedCustomer({ newCustomer })}
-                            className="bg-green-600 text-white w-full lg:w-auto px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition duration-300"
+                            className="bg-green-700 text-white w-full lg:w-auto px-6 py-3 rounded-lg shadow-[0px_4px_10px_rgba(0,0,0,0.7)] hover:bg-green-800 transition duration-300"
                         >
                             <FontAwesomeIcon icon={faPlus} /> Add New Customer
                         </button>
@@ -423,7 +419,7 @@ const CustomerCredit = () => {
                 )}
             </div>
             <div>
-                <Footer/>
+                <Footer />
             </div>
         </div>
     );

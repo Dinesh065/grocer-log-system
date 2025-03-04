@@ -1,6 +1,6 @@
 import express from "express";
 import { InventoryItem } from "../models/inventory.models.js";
-import { Customer } from "../models/Customer.model.js";
+import { Customer } from "../models/customer.model.js";
 import { Sale } from "../models/sales.model.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import mongoose from "mongoose";

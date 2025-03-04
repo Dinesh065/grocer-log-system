@@ -9,8 +9,8 @@ import zod from "zod"
 const router = Router();
 
 const signupSchema=zod.object({
-    firstName:zod.string().min(5),
-    lastName:zod.string().min(5),
+    firstName:zod.string().min(3),
+    lastName:zod.string().min(3),
     email:zod.string().email(),
     password: zod.string().min(6).regex(/^[a-zA-Z0-9]*$/, "Password must be alphanumeric")
 })
@@ -18,8 +18,11 @@ const signupSchema=zod.object({
 router.post("/signup", async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     const response = signupSchema.safeParse(req.body);
-    if(!response.success){
-        return res.status(400).json({ message: "Please provide valid customer details." });
+    if (!response.success) {
+        return res.status(400).json({ 
+            message: "Invalid details", 
+            errors: response.error.format() 
+        });
     }
     try {
         const existingUser = await User.findOne({ email });
@@ -29,12 +32,11 @@ router.post("/signup", async (req, res) => {
                 .json({ statusCode: 400, message: "User already exists" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             firstName,
             lastName,
             email,
-            password: hashedPassword,
+            password,
         });
 
         await newUser.save();
@@ -101,7 +103,7 @@ router.put("/change-password", verifyJWT, async (req, res) => {
             return res.status(400).json({ message: "Old password is incorrect." });
         }
 
-        user.password = await bcrypt.hash(newPassword, 10);
+        user.password = newPassword;
         await user.save();
 
         console.log("Password updated successfully for user:", user.email);
@@ -128,6 +130,17 @@ router.post('/demo', async (req, res) => {
         res.status(201).json(new ApiResponse(201, newDemoUser, 'Demo user added successfully'));
     } catch (error) {
         res.status(500).json(new ApiError(500, error.message));
+    }
+});
+
+router.get('/userInfo', verifyJWT, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select("firstName email");
+        if (!user) return res.status(404).json({ message: "User Not Found" });
+
+        res.json({ name: user.firstName, email: user.email });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
     }
 });
 

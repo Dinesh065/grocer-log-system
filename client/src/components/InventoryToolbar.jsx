@@ -52,7 +52,7 @@ const InventoryToolbar = ({
   };
 
   return (
-    <div className="toolbar flex flex-wrap items-center gap-4 p-4 bg-gray-100 shadow-lg rounded-lg">
+    <div className="toolbar flex flex-wrap items-center gap-4 p-4 bg-gray-900 shadow-lg rounded-lg">
       <div className="relative w-full sm:w-auto flex-grow">
         <input
           type="text"
@@ -60,15 +60,15 @@ const InventoryToolbar = ({
           value={searchTerm}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          className="w-full h-[50px] bg-white shadow-lg rounded-lg p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full h-[50px] bg-[#0d1321] text-white shadow-lg rounded-lg p-2 border border-[#ffffff33] focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {suggestions.length > 0 && (
-          <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-60 overflow-y-auto">
+          <ul className="absolute z-10 bg-[#0d1321] border border-[#ffffff33] w-full mt-1 max-h-60 overflow-y-auto">
             {suggestions.map((item, index) => (
               <li
                 key={index}
-                className="p-2 hover:bg-gray-200 cursor-pointer"
+                className="p-2 hover:bg-[#2a2a3b] cursor-pointer text-white"
                 onClick={() => handleSuggestionClick(item)}
               >
                 {item}
@@ -81,7 +81,7 @@ const InventoryToolbar = ({
       <select
         value={filterStatus}
         onChange={(e) => setFilterStatus(e.target.value)}
-        className="w-full sm:w-auto h-[50px] bg-white shadow-lg rounded-lg p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full sm:w-auto h-[50px] bg-[#0d1321] text-white shadow-lg rounded-lg p-2 border border-[#ffffff33] focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="">All Statuses</option>
         <option value="In Stock">In Stock</option>
@@ -92,7 +92,7 @@ const InventoryToolbar = ({
       <select
         value={sortBy}
         onChange={(e) => setSortBy(e.target.value)}
-        className="w-full sm:w-auto h-[50px] bg-white shadow-lg rounded-lg p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full sm:w-auto h-[50px] bg-[#0d1321] text-white shadow-lg rounded-lg p-2 border border-[#ffffff33] focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option value="">Sort By</option>
         <option value="name">Item Name</option>
@@ -100,13 +100,14 @@ const InventoryToolbar = ({
       </select>
 
       <button
-        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+        className="flex items-center bg-[#30336b] text-white px-4 py-2 rounded-lg shadow-lg hover:bg-[#535c91] transition duration-300 ease-in-out"
         onClick={showAddNewItemForm}
       >
         <AddIcon className="mr-2" />
         Add New Item
       </button>
     </div>
+
   );
 
 };
