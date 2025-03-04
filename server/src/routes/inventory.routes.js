@@ -1,7 +1,8 @@
 import express from "express";
 import { InventoryItem } from "../models/inventory.models.js";
 import { Router } from "express";
-import { asyncHandler } from "../utils/asynchandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import zod from "zod";
 
