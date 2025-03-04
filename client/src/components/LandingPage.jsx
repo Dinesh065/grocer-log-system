@@ -102,7 +102,7 @@ const LandingPage = () => {
             </p>
           </motion.div>
           <motion.img
-            src="/Inventoryimage.png"
+            src="/InventoryImage.png"
             alt="Inventory Management"
             className="lg:w-[45%] w-full h-auto rounded-lg shadow-lg border border-gray-700"
             variants={slideInRightVariant}
