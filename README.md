@@ -107,8 +107,8 @@ Follow these steps to set up and run the project locally:
 ## 📫 Contact Me
 
 Let's connect and collaborate!  
-- **LinkedIn:** [Dinesh Choudhary][https://www.linkedin.com/in/dinesh-choudhary-4aa2082aa/]
+- **LinkedIn:** [https://www.linkedin.com/in/dinesh-choudhary-4aa2082aa/]
 - **Email:** dc9359349132@gmail.com
-- **Twitter:** [Dinesh Choudhary][https://x.com/DineshChou90368]
+- **Twitter:** [https://x.com/DineshChou90368]
 
 ---
