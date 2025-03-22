@@ -85,13 +85,14 @@ Follow these steps to set up and run the project locally:
 
 ### **Screenshots**
 **Dashboard**
-![DashboardImage](https://github.com/user-attachments/assets/46259f17-dd94-4299-b15c-57901ae1b795)
+![DashboardImage](https://github.com/user-attachments/assets/9b7c8db1-da02-441c-990b-1bc45f08ad22)
+
 **Inventory Log**
-![Inventoryimage](https://github.com/user-attachments/assets/f9445f1d-27d5-4383-a11a-bd487973f866)
+![Inventoryimage](https://github.com/user-attachments/assets/75a32336-d548-45c0-a8bd-908b5072978b)
 **Sales Log**
-![SalesImage](https://github.com/user-attachments/assets/a9423edc-88de-46b6-821d-e53b239600e4)
+![SalesImage](https://github.com/user-attachments/assets/2d81fe98-a9aa-459a-9f8f-fbe6710331a7)
 **Customer Credit Log**
-![CustomerCreditImage](https://github.com/user-attachments/assets/59cb7016-6c91-41bc-b971-32458187d076)
+![CustomerCreditImage](https://github.com/user-attachments/assets/9ab80f0c-b2b1-49b9-986b-c7bacd572b42)
 
 ---
 
@@ -106,8 +107,8 @@ Follow these steps to set up and run the project locally:
 ## 📫 Contact Me
 
 Let's connect and collaborate!  
-- **LinkedIn:** [Dinesh Choudhary][https://www.linkedin.com/in/dinesh-choudhary-4aa2082aa/]
+- **LinkedIn:** [https://www.linkedin.com/in/dinesh-choudhary-4aa2082aa/]
 - **Email:** dc9359349132@gmail.com
-- **Twitter:** [Dinesh Choudhary][https://x.com/DineshChou90368]
+- **Twitter:** [https://x.com/DineshChou90368]
 
 ---
