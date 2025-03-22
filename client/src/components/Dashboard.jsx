@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import StockAlert from './StockAlert';
 import DashboardItems from './DashboardItems';
+import { API_BASE_URL } from '../config';
 import Footer from './Footer';
 
 const Dashboard = () => {
@@ -13,7 +14,7 @@ const Dashboard = () => {
             if (!token) return;
 
             try {
-                const response = await fetch('http://localhost:8000/api/v1/users/userInfo', {
+                const response = await fetch(`${API_BASE_URL}/users/userInfo`, {
                     headers: { Authorization: token }
                 });
                 const data = await response.json();

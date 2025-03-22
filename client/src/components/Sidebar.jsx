@@ -46,14 +46,14 @@ export default function Navbar() {
         <div style={{ display: "flex", alignItems: "center", color: "#1976d2", cursor: "default" }}>
           <ShoppingCartIcon />
           <Typography variant="h6" sx={{ fontWeight: "bold", marginLeft: "5px" }}>
-            Grocer Log
+            Grocer's Log System
           </Typography>
         </div>
 
         {/* Desktop Options */}
         <div className="desktop-options" style={{ display: "flex", gap: "20px" }}>
-          {menuItems.map((item, index) => (
-            <Link to={item.path} style={{ textDecoration: "none", color: "inherit" }}>
+          {menuItems.map((item) => (
+            <Link key={item.label} to={item.path} style={{ textDecoration: "none", color: "inherit" }}>
               <div
                 style={{
                   display: "flex",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const DashboardCards = () => {
     const [dashboardData, setDashboardData] = useState({
@@ -12,13 +13,12 @@ const DashboardCards = () => {
         salesEntries: []
     });
     const navigate = useNavigate();
-    //lacm ,elastics, tech mehindra, accentures, 7-8 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await axios.get("http://localhost:8000/api/v1/dashboard", {
+                const response = await axios.get(`${API_BASE_URL}/dashboard`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white py-8 px-6">
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold text-green-400">Grocer Log System</h1>
+          <h1 className="text-2xl font-bold text-green-400">Grocer's Log System</h1>
           <p className="text-gray-300">
             Simplifying tasks for grocers by streamlining inventory, sales, and credit logs.
           </p>

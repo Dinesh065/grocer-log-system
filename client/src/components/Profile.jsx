@@ -4,6 +4,7 @@ import { Tooltip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config";
 
 const Profile = () => {
   const [user, setUser] = useState({
@@ -22,7 +23,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8000/api/v1/users/me", {
+        const { data } = await axios.get(`${API_BASE_URL}/users/me`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -58,7 +59,7 @@ const Profile = () => {
         phoneNumber: user.phoneNumber,
       };
 
-      const { data } = await axios.put("http://localhost:8000/api/v1/users/me", updateData, {
+      const { data } = await axios.put(`${API_BASE_URL}/users/me`, updateData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -83,7 +84,7 @@ const Profile = () => {
       }
 
       await axios.put(
-        "http://localhost:8000/api/v1/users/change-password",
+        `${API_BASE_URL}/users/change-password`,
         { oldPassword, newPassword },
         {
           headers: {

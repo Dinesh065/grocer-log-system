@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import '../App.css';
 
 const BillModal = ({ selectedCustomer, sendBillEmail, setShowBillModal }) => {
@@ -8,7 +9,7 @@ const BillModal = ({ selectedCustomer, sendBillEmail, setShowBillModal }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/v1/users/me', {
+                const response = await axios.get(`${API_BASE_URL}/users/me`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },

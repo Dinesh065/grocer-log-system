@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const StockAlert = () => {
   const [alerts, setAlerts] = useState([]);
@@ -40,7 +41,7 @@ const StockAlert = () => {
   const fetchStockAlerts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8000/api/v1/inventory/items", {
+      const response = await axios.get(`${API_BASE_URL}/inventory/items`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../config";
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -19,7 +20,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:8000/api/v1/users/signup";
+      const url = `${API_BASE_URL}/users/signup`;
       const { data: res } = await axios.post(url, data);
       navigate("/login");
       console.log(res.message);

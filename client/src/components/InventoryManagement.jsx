@@ -6,6 +6,7 @@ import AddNewItemForm from "./AddNewItemForm";
 import axios from "axios";
 import Footer from "./Footer";
 import { useDashboard } from "./DashboardContext";
+import { API_BASE_URL } from "../config";
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
@@ -27,7 +28,7 @@ const Inventory = () => {
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await axios.get("http://localhost:8000/api/v1/inventory/items", {
+                const response = await axios.get(`${API_BASE_URL}/inventory/items`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -92,7 +93,7 @@ const Inventory = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.post("http://localhost:8000/api/v1/inventory/addnewitem", newItem, {
+            const response = await axios.post(`${API_BASE_URL}/inventory/addnewitem`, newItem, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -128,7 +129,7 @@ const Inventory = () => {
             const token = localStorage.getItem("token");
 
             const response = await axios.put(
-                `http://localhost:8000/api/v1/inventory/update/${editItemSku}`,
+                `${API_BASE_URL}/inventory/update/${editItemSku}`,
                 updatedItem,
                 {
                     headers: {
@@ -160,7 +161,7 @@ const Inventory = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.delete(`http://localhost:8000/api/v1/inventory/deletebysku/${sku}`, {
+            const response = await axios.delete(`${API_BASE_URL}/inventory/deletebysku/${sku}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -3,6 +3,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { useDashboard } from "./DashboardContext";
 import Footer from "./Footer";
+import { API_BASE_URL } from "../config";
 
 const SalesLog = () => {
     const [showAddNewSaleForm, setShowAddNewSaleForm] = useState(false);
@@ -13,7 +14,7 @@ const SalesLog = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get("http://localhost:8000/api/v1/sales/getsales", {
+            const response = await axios.get(`${API_BASE_URL}/sales/getsales`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -64,7 +65,7 @@ const SalesLog = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.post("http://localhost:8000/api/v1/sales/addnewsale", saleWithTotal, {
+            const response = await axios.post(`${API_BASE_URL}/sales/addnewsale`, saleWithTotal, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

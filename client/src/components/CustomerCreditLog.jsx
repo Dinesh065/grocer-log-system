@@ -11,6 +11,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useDashboard } from './DashboardContext';
 import Footer from './Footer';
+import { API_BASE_URL } from '../config';
 import '../App.css';
 
 const CustomerCredit = () => {
@@ -71,7 +72,7 @@ const CustomerCredit = () => {
             };
 
             const response = await axios.post(
-                'http://localhost:8000/api/v1/customers/addnewcustomer',
+                `${API_BASE_URL}/customers/addnewcustomer`,
                 customerData,
                 {
                     headers: {
@@ -129,7 +130,7 @@ const CustomerCredit = () => {
                 lastPurchase: currentDate,
             };
 
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatepurchase`, updatedCustomer, {
+            const response = await axios.put(`${API_BASE_URL}/customers/${selectedCustomer._id}/updatepurchase`, updatedCustomer, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -152,7 +153,7 @@ const CustomerCredit = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get('http://localhost:8000/api/v1/customers', {
+            const response = await axios.get(`${API_BASE_URL}/customers`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -189,7 +190,7 @@ const CustomerCredit = () => {
                 totalPending: 0,
                 paidOn: paidDate
             };
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/markAsPaid`, updatedCustomer, {
+            const response = await axios.put(`${API_BASE_URL}/customers/${selectedCustomer._id}/markAsPaid`, updatedCustomer, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -212,7 +213,7 @@ const CustomerCredit = () => {
 
             if (!selectedCustomer) return;
 
-            const response = await axios.delete(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/deleteCustomer`, {
+            const response = await axios.delete(`${API_BASE_URL}/customers/${selectedCustomer._id}/deleteCustomer`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -243,7 +244,7 @@ const CustomerCredit = () => {
                 totalPending: updatedTotalPending,
             };
 
-            const response = await axios.put(`http://localhost:8000/api/v1/customers/${selectedCustomer._id}/updatePurchases`, updatedCustomer, {
+            const response = await axios.put(`${API_BASE_URL}/customers/${selectedCustomer._id}/updatePurchases`, updatedCustomer, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -314,7 +315,7 @@ const CustomerCredit = () => {
             `;
 
             const response = await axios.post(
-                'http://localhost:8000/api/v1/customers/send-bill-email',
+                `${API_BASE_URL}/customers/send-bill-email`,
                 {
                     email: selectedCustomer.email,
                     billHtml,

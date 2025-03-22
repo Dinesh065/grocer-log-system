@@ -4,6 +4,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import SimpleNavbar from "./SimpleNavbar.jsx";
+import { API_BASE_URL } from "../config.jsx";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const LandingPage = () => {
   const handleDemoSubmit = async () => {
     if (validateEmail(email)) {
       try {
-        const url = "http://localhost:8000/api/v1/users/demo";
+        const url = `${API_BASE_URL}/users/demo`;
         await axios.post(url, { email });
         sessionStorage.setItem("demoToken", "true");
         setShowDemoModal(false);
