@@ -1,17 +1,17 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Sidebar from './components/sidebar';
-import Dashboard from './components/Dashboard';
-import InventoryManagement from './components/InventoryManagement';
-import SalesLog from './components/SalesLog';
-import CustomerCreditLog from './components/CustomerCreditLog';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
+import Sidebar from './components/Sidebar.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import InventoryManagement from './components/InventoryManagement.jsx';
+import SalesLog from './components/SalesLog.jsx';
+import CustomerCreditLog from './components/CustomerCreditLog.jsx';
+import Login from './components/auth/Login.jsx';
+import Signup from './components/auth/Signup.jsx';
 import LandingPage from './components/LandingPage';
-import { DashboardProvider } from './components/DashboardContext';
-import Logout from './components/auth/Logout';
-import Profile from './components/Profile';
+import { DashboardProvider } from './components/DashboardContext.jsx';
+import Logout from './components/auth/Logout.jsx';
+import Profile from './components/Profile.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
