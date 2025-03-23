@@ -8,12 +8,22 @@ import bcrypt from "bcrypt"
 import zod from "zod"
 const router = Router();
 
-const signupSchema=zod.object({
-    firstName:zod.string().min(3),
-    lastName:zod.string().min(3),
-    email:zod.string().email(),
-    password: zod.string().min(6).regex(/^[a-zA-Z0-9]*$/, "Password must be alphanumeric")
-})
+const signupSchema = zod.object({
+    firstName: zod.string()
+        .min(3, "First name must be at least 3 characters long")
+        .regex(/^[A-Za-z]+$/, "First name must only contain letters"),
+
+    lastName: zod.string()
+        .min(3, "Last name must be at least 3 characters long")
+        .regex(/^[A-Za-z]+$/, "Last name must only contain letters"),
+
+    email: zod.string().email(),
+    
+    password: zod.string()
+        .min(6, "Password must be at least 6 characters long")
+        .regex(/^[a-zA-Z0-9]*$/, "Password must be alphanumeric"),
+});
+
 
 router.post("/signup", async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
