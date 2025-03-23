@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import SimpleNavbar from "./SimpleNavbar.jsx";
 import { API_BASE_URL } from "../config.jsx";
+import InventoryImage from "../assets/InventoryImage.png"; 
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -103,7 +104,7 @@ const LandingPage = () => {
             </p>
           </motion.div>
           <motion.img
-            src="/InventoryImage.png"
+            src={InventoryImage}
             alt="Inventory Management"
             className="lg:w-[45%] w-full h-auto rounded-lg shadow-lg border border-gray-700"
             variants={slideInRightVariant}
